@@ -4,6 +4,7 @@ import json
 import xmind
 import logging
 from xmind2testcase.zentao import xmind_to_zentao_csv_file
+from xmind2testcase.gitee import xmind_to_gitee_csv_file
 from xmind2testcase.testlink import xmind_to_testlink_xml_file
 from xmind2testcase.utils import xmind_testcase_to_json_file
 from xmind2testcase.utils import xmind_testsuite_to_json_file
@@ -14,16 +15,18 @@ logging.basicConfig(level=logging.INFO)
 
 
 def main():
-    xmind_file = 'docs/my_xmind_testcase_v1.1.xmind'
+    xmind_file = 'docs/gitee_testcase_template.xmind'
     print('Start to convert XMind file: %s' % xmind_file)
 
     # 1、testcases import file
     # (1) zentao
-    zentao_csv_file = xmind_to_zentao_csv_file(xmind_file)
-    print('Convert XMind file to zentao csv file successfully: %s' % zentao_csv_file)
+    # zentao_csv_file = xmind_to_zentao_csv_file(xmind_file)
+    # print('Convert XMind file to zentao csv file successfully: %s' % zentao_csv_file)
+    gitee_csv_file = xmind_to_gitee_csv_file(xmind_file)
+    print('Convert XMind file to gitee csv file successfully: %s' % gitee_csv_file)
     # (2) testlink
-    testlink_xml_file = xmind_to_testlink_xml_file(xmind_file)
-    print('Convert XMind file to testlink xml file successfully: %s' % testlink_xml_file)
+    # testlink_xml_file = xmind_to_testlink_xml_file(xmind_file)
+    # print('Convert XMind file to testlink xml file successfully: %s' % testlink_xml_file)
 
     # # 2、 testcases json file
     # # (1) testsuite

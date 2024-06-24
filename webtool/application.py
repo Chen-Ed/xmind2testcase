@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # _*_ coding:utf-8 _*_
+import sys
+sys.path.append("..")
 import logging
 import os
 import re
@@ -9,9 +11,11 @@ from contextlib import closing
 from os.path import join, exists
 from werkzeug.utils import secure_filename
 from xmind2testcase.zentao import xmind_to_zentao_csv_file
+from xmind2testcase.gitee import xmind_to_gitee_csv_file
 from xmind2testcase.testlink import xmind_to_testlink_xml_file
 from xmind2testcase.utils import get_xmind_testsuites, get_xmind_testcase_list
 from flask import Flask, request, send_from_directory, g, render_template, abort, redirect, url_for
+
 
 here = os.path.abspath(os.path.dirname(__file__))
 log_file = os.path.join(here, 'running.log')
@@ -255,6 +259,17 @@ def download_zentao_file(filename):
 
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
 
+@app.route('/<filename>/to/gitee')
+def download_gitee_file(filename):
+    full_path = join(app.config['UPLOAD_FOLDER'], filename)
+
+    if not exists(full_path):
+        abort(404)
+
+    gitee_csv_file = xmind_to_gitee_csv_file(full_path)
+    filename = os.path.basename(gitee_csv_file) if gitee_csv_file else abort(404)
+
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
 
 @app.route('/preview/<filename>')
 def preview_file(filename):
