@@ -65,64 +65,8 @@ if __name__ == '__main__':
     d = '【操作方式一】,【操作方式二】'.split(',')
     e = '【部分】,【全部】'.split(',')
     f = '【增加】,【删除】,【更改】'.split(',')
-    g = """Leave Balance
-Attendance
-K11 eFlagging
-Billing
-RM+
-旧SOPI
-iOA
-BrandBook
-Ctrip
-One-ITS
-AccessControl
-iHM
-Tezign
-PMS
-Signature
-Leasing""".split('\n')
-    h = """BA 2.0 应用
-BA 2.0 手册
-SA.Pad 应用
-SA.Pad 手册
-TalentPlus 应用
-TalentPlus 手册
-E-Learning
-NWDrive
-Sharepoint HK
-MICE
-CRM+SOP
-KPOS
-Sharepoint GZ
-Sharepoint BJ
-Sharepoint SH
-CRM+ 应用
-FZ CRM Backend
-FZ CRM Frontend
-Qlikview
-SSRS Report
-eForm Portal
-DMS NB
-Customer
-CRM+ HK
-DMS TJ
-DMS 手册
-Brand DB""".split("\n")
-    j = """默认工具
-Office-Tools 办公工具
-Pre-opening 开业工具
-Operation 操作应用
-Back-end Office 内部办公工具
-Others 其他
-Handbook 手册""".strip().split('\n')
 
-    templeStr = """在应用管理页面，把应用的应用类型从 默认工具 切换为 【[0]】。
-	点击应用分类标识
-		返回包含应用类型：【[0]】
-	点击【[0]】
-		成功
-	查看应用列表页面
-		应用在【[0]】类中展示"""
-    inputList=[j]
+    templeStr = """"""
+    inputList=[]
     combinations = get_sorted_combinations(inputList)
     insertStr(templeStr,combinations)
