@@ -65,8 +65,10 @@ if __name__ == '__main__':
     d = '【操作方式一】,【操作方式二】'.split(',')
     e = '【部分】,【全部】'.split(',')
     f = '【增加】,【删除】,【更改】'.split(',')
+    g = '【用户】，【角色】，【权限】，【部门】，【消息\公告】，【公司】，【项目】，【操作记录】，【岗位】'.split('，')
+    h = '新增，修改，查看'.split('，')
 
-    templeStr = """"""
-    inputList=[]
+    templeStr = """[0] [1] 数据成功"""
+    inputList=[h,g]
     combinations = get_sorted_combinations(inputList)
     insertStr(templeStr,combinations)
