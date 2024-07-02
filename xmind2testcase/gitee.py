@@ -30,7 +30,7 @@ def xmind_to_gitee_csv_file(xmind_file):
         # logging.info('The gitee csv file already exists, return it directly: %s', gitee_file)
         # return gitee_file
 
-    with open(gitee_file, 'w', encoding='ANSI',newline='') as f:
+    with open(gitee_file, 'w', encoding='utf-8-sig',newline='') as f:
         writer = csv.writer(f)
         writer.writerows(gitee_testcase_rows)
         logging.info('Convert XMind file(%s) to a gitee csv file(%s) successfully!', xmind_file, gitee_file)
