@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # _*_ coding:utf-8 _*_
 import sys
+
 sys.path.append("..")
 import logging
 import os
@@ -16,6 +17,8 @@ from xmind2testcase.testlink import xmind_to_testlink_xml_file
 from xmind2testcase.utils import get_xmind_testsuites, get_xmind_testcase_list
 from flask import Flask, request, send_from_directory, g, render_template, abort, redirect, url_for
 
+from mytool.har2xmind import *
+from mytool.swagger2xmind import *
 
 here = os.path.abspath(os.path.dirname(__file__))
 log_file = os.path.join(here, 'running.log')
@@ -40,7 +43,7 @@ werkzeug_logger.setLevel(logging.DEBUG)
 
 # global variable
 UPLOAD_FOLDER = os.path.join(here, 'uploads')
-ALLOWED_EXTENSIONS = ['xmind']
+ALLOWED_EXTENSIONS = ['xmind', 'har', 'json']
 DEBUG = True
 DATABASE = os.path.join(here, 'data.db3')
 HOST = '0.0.0.0'
@@ -156,7 +159,7 @@ def get_records(limit=8):
 
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+        filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
 def check_file_name(name):
@@ -201,7 +204,12 @@ def verify_uploaded_files(files):
 
 
 @app.route('/', methods=['GET', 'POST'])
-def index(download_xml=None):
+def index():
+    return render_template('my_tool.html')
+
+
+@app.route('/xmind2case', methods=['GET', 'POST'])
+def xmind2case(download_xml=None):
     g.invalid_files = []
     g.error = None
     g.download_xml = download_xml
@@ -226,7 +234,29 @@ def index(download_xml=None):
     if g.filename:
         return redirect(url_for('preview_file', filename=g.filename))
     else:
-        return render_template('index.html', records=list(get_records()))
+        return render_template('xmind2case.html', records=list(get_records()))
+
+
+@app.route('/har2xmind', methods=['POST'])
+def har2xmind():
+    file = request.files['file']
+    if file:
+        # 处理文件
+        filename = request.files['file'].filename
+        if not filename.endswith('.har'):
+            g.error = "Invalid file: {}".format(','.join(g.invalid_files))
+        else:
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            file_base_name = filename[:-4]
+            input_har_path = join(app.config['UPLOAD_FOLDER'], filename)
+            out_put_file = f'{file_base_name}.xmind'
+            convert_har_to_xmind(input_har_path, join(app.config['UPLOAD_FOLDER'], out_put_file))
+            return send_from_directory(app.config['UPLOAD_FOLDER'], out_put_file, as_attachment=True)
+    else:
+        return "No file was uploaded."
+
+
 
 
 @app.route('/uploads/<filename>')
@@ -259,6 +289,7 @@ def download_zentao_file(filename):
 
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
 
+
 @app.route('/<filename>/to/gitee')
 def download_gitee_file(filename):
     full_path = join(app.config['UPLOAD_FOLDER'], filename)
@@ -270,6 +301,7 @@ def download_gitee_file(filename):
     filename = os.path.basename(gitee_csv_file) if gitee_csv_file else abort(404)
 
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
+
 
 @app.route('/preview/<filename>')
 def preview_file(filename):
@@ -290,7 +322,6 @@ def preview_file(filename):
 
 @app.route('/delete/<filename>/<int:record_id>')
 def delete_file(filename, record_id):
-
     full_path = join(app.config['UPLOAD_FOLDER'], filename)
     if not exists(full_path):
         abort(404)

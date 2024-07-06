@@ -10,6 +10,7 @@
 <body>
 <div class="splash-container">
     <div class="splash">
+        <a href="{{ url_for('index') }}" class="pure-button pure-button-primary">返回首页</a>
         <h1>
             Xmind to TestCase
         </h1>
@@ -23,6 +24,9 @@
                     <input type="submit" class="pure-button " value="开始转换"/>
                 </form>
             </div>
+            {#跳转至我的工具页#}
+            <a href="{{ url_for('my_tool') }}" class="pure-button ">我的工具</a>
+
             {% if records %}
                 <table class="pure-table recent-xminds">
                     <thead>
@@ -55,7 +59,7 @@
             {% endif %}
         </div>
         <div class="footer-home">
-            <a href="{{ url_for('static', filename='guide/index.html') }}" target="_blank">User Guide</a> |
+            <a href="{{ url_for('static', filename='guide/xmind2case.html') }}" target="_blank">User Guide</a> |
             <a href="https://github.com/zhuifengshen/xmind2testcase/issues/new" target="_blank">Report Issue</a> |
             Powered by <a href="https://github.com/zhuifengshen/xmind2testcase" target="_blank">XMind2TestCase</a>
         </div>

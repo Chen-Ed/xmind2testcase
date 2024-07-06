@@ -355,7 +355,7 @@ def usr_info(page, auth_token, base_url) -> list:
 if __name__ == '__main__':
     base_url = 'https://1p-portal-k11-uat.nwplatform.com.cn/portal-uat'
     # base_url = 'https://1p-portal-testk11-uat.nwplatform.com.cn/portal-uat'
-    auth_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsdWNhc19BIiwiYnVfZ3VpZCI6Ijk5NWY5ZDViNWE5MTExZWQ4NDUwMDAxNjNlMTc1NGFlIiwidXNlcl90eXBlIjoic3RhZmYiLCJ1c2VyX2d1aWQiOiJlNzVlMzNmNDQxOTc0ZWY5OTVhNzQzNTgxNmI2ZGNlOCIsImp0aSI6IjZkZTIwMTEyODIxMjRkMzc5NWM4ZmUxMzliZjc5MjFmIiwic3RhZmZfZ3VpZCI6ImU3NWUzM2Y0NDE5NzRlZjk5NWE3NDM1ODE2YjZkY2U4In0.SePjTdbXlKxieRI45h-1v5o79g-BwfCOeUbPIwXYugM'
+    auth_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsdWNhc19BIiwiYnVfZ3VpZCI6Ijk5NWY5ZDViNWE5MTExZWQ4NDUwMDAxNjNlMTc1NGFlIiwidXNlcl90eXBlIjoic3RhZmYiLCJ1c2VyX2d1aWQiOiJlNzVlMzNmNDQxOTc0ZWY5OTVhNzQzNTgxNmI2ZGNlOCIsImp0aSI6IjAzYjQwNTUzOTM3NTQ0NzNiZDFjZWY1YWQ0NWFkODg3Iiwic3RhZmZfZ3VpZCI6ImU3NWUzM2Y0NDE5NzRlZjk5NWE3NDM1ODE2YjZkY2U4In0.UmuIYVtmmjgXfKuc5fXndZJE9kQ-1wgzCKKqbsglf4M'
     # for f in [company_id,project_id,staff_id,role_id,app_id]:
     for f in [usr_info]:
         ids = dataIter(auth_token, f, base_url)

@@ -65,10 +65,15 @@ if __name__ == '__main__':
     d = '【操作方式一】,【操作方式二】'.split(',')
     e = '【部分】,【全部】'.split(',')
     f = '【增加】,【删除】,【更改】'.split(',')
+    ff = '【新增】,【修改】,【查看】'.split(',')
     g = '【用户】，【角色】，【权限】，【部门】，【消息\公告】，【公司】，【项目】，【操作记录】，【岗位】'.split('，')
-    h = '新增，修改，查看'.split('，')
+    h = '新增，修改，查看，导出'.split('，')
+    i = '【项目列表】,【项目详情信息】,【项目成员】,【项目关联公司】,【项目关联公司详情信息】,【项目隐私协议】,【项目隐私协议-历史版本】'.split(',')
+    j = '【角色】,【角色名称】,【角色权限配置】,【角色列表】,【角色详情】,【角色权限配置详情】,【个人页面，角色指派信息】'.split(',')
 
-    templeStr = """[0] [1] 数据成功"""
-    inputList=[h,g]
-    combinations = get_sorted_combinations(inputList)
+    templeStr = """在NWCS BU中，[0] [1]数据，预期成功
+	[0] [1]数据
+		成功"""
+    inputList=[ff,g]
+    combinations = get_sorted_combinations(inputList,ff)
     insertStr(templeStr,combinations)
