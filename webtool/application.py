@@ -208,6 +208,32 @@ def index():
     return render_template('my_tool.html')
 
 
+@app.route('/api2xmind', methods=['POST'])
+def api2xmind():
+    file = request.files['file']
+    if file:
+        # 处理文件
+        filename = request.files['file'].filename
+        file_base_name = filename[:-4]
+        input_har_path = join(app.config['UPLOAD_FOLDER'], filename)
+        out_put_file = f'{file_base_name}.xmind'
+
+        if filename.endswith('.har'):
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            convert_har_to_xmind(input_har_path, join(app.config['UPLOAD_FOLDER'], out_put_file))
+            return send_from_directory(app.config['UPLOAD_FOLDER'], out_put_file, as_attachment=True)
+
+        elif filename.endswith('.json'):
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            convert_swagger_to_xmind(input_har_path, join(app.config['UPLOAD_FOLDER'], out_put_file))
+            return send_from_directory(app.config['UPLOAD_FOLDER'], out_put_file, as_attachment=True)
+        else:
+            g.error = "不支持该文件类型: {}".format(','.join(g.invalid_files))
+
+    else:
+        return "No file was uploaded."
+
+    
 @app.route('/xmind2case', methods=['GET', 'POST'])
 def xmind2case(download_xml=None):
     g.invalid_files = []
@@ -235,27 +261,6 @@ def xmind2case(download_xml=None):
         return redirect(url_for('preview_file', filename=g.filename))
     else:
         return render_template('xmind2case.html', records=list(get_records()))
-
-
-@app.route('/har2xmind', methods=['POST'])
-def har2xmind():
-    file = request.files['file']
-    if file:
-        # 处理文件
-        filename = request.files['file'].filename
-        if not filename.endswith('.har'):
-            g.error = "Invalid file: {}".format(','.join(g.invalid_files))
-        else:
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-            file_base_name = filename[:-4]
-            input_har_path = join(app.config['UPLOAD_FOLDER'], filename)
-            out_put_file = f'{file_base_name}.xmind'
-            convert_har_to_xmind(input_har_path, join(app.config['UPLOAD_FOLDER'], out_put_file))
-            return send_from_directory(app.config['UPLOAD_FOLDER'], out_put_file, as_attachment=True)
-    else:
-        return "No file was uploaded."
-
 
 
 
