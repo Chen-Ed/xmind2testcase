@@ -7,12 +7,15 @@
     <link rel="shortcut icon" href="{{ url_for('static',filename='favicon.ico') }}" type="image/x-icon"/>
     <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static',filename='css/pure-min.css') }}">
     <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static',filename='css/custom.css') }}">
+    <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static', filename='css/mytool.css') }}">
+
     <style>
         .tools-list {
             margin-top: 50px;
         }
         .tool-item {
             margin-bottom: 20px;
+            position: relative;
         }
     </style>
 </head>
@@ -28,12 +31,68 @@
                 <h3>Har/Json文件转换为Xmind文件。</h3>
 {#                <a href="{{ url_for('har2xmind') }}"  class="pure-button ">Har to Xmind 工具</a>#}
                 <form action="{{ url_for('api2xmind') }}" method="POST" enctype="multipart/form-data">
-                    <label id="file-label" for="file" class="pure-label">
-                        --> 点击这里选择您的Har/Swagger文件 <--
-                    </label>
-                    <input id="file" accept=".har,.json" type="file" name="file" required/><br>
-                    <input type="submit" value="开始转换" class="pure-button">
+{#                    <label id="file-label" for="file" class="pure-label">#}
+{#                        --> 点击这里选择您的Har/Swagger文件 <--#}
+{#                    </label>#}
+{#                    <input id="file" accept=".har,.json" type="file" name="file" required/><br>#}
+                    <div id="drop-zone" style="width: 300px; height: 200px; border: 2px dashed #ccc; text-align: center; line-height: 200px;">
+                        将文件拖到此处
+                    </div>
+{#                    <input type="submit" value="开始转换" class="pure-button">#}
                 </form>
+                <script>
+                    document.getElementById('drop-zone').addEventListener('dragover', function(event) {
+                        event.preventDefault();
+                        this.classList.add('highlight');
+                    });
+
+                    document.getElementById('drop-zone').addEventListener('dragleave', function(event) {
+                        this.classList.remove('highlight');
+                    });
+
+                    document.getElementById('drop-zone').addEventListener('drop', function(event) {
+                        event.preventDefault();
+                        this.classList.remove('highlight');
+
+
+                        var file = event.dataTransfer.files[0];
+                        var formData = new FormData();
+                        formData.append('file', file);
+
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('POST', '/api2xmind', true);
+                        xhr.responseType = 'blob'; // 设置 responseType 为 blob
+                        xhr.onload = function() {
+                            if (xhr.status == 200) {
+                                // 创建Blob对象，用于处理二进制数据
+                                {#var blob = new Blob([xhr.response], {type: 'application/octet-stream'});#}
+                                var blob = xhr.response; // xhr.response 包含了 Blob 对象
+                                // 创建一个URL表示这个Blob对象
+                                var url = window.URL.createObjectURL(blob);
+
+                                // 创建一个隐藏的`<a>`标签，用于触发下载
+                                var filename = xhr.getResponseHeader('X-Download-Filename');
+                                var a = document.createElement('a');
+                                a.href = url;
+
+                                // 设置下载的文件名，这应该与后端返回的文件名一致
+                                a.download = filename; // 这里应根据实际返回的文件名动态设置
+
+                                // 触发下载
+                                a.click();
+
+                                // 清理URL
+                                window.URL.revokeObjectURL(url);
+
+                                console.log('文件下载成功');
+                            } else {
+                                console.log('文件上传失败');
+                            }
+                        }
+                        xhr.send(formData);
+                    });
+                </script>
+
             </div>
 {#            <div class="tool-item">#}
 {#                <h3>Swagger3.0 json文件转换为xmind文件。</h3>#}

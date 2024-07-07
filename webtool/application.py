@@ -214,26 +214,34 @@ def api2xmind():
     if file:
         # 处理文件
         filename = request.files['file'].filename
-        file_base_name = filename[:-4]
-        input_har_path = join(app.config['UPLOAD_FOLDER'], filename)
-        out_put_file = f'{file_base_name}.xmind'
+        input_file_path = join(app.config['UPLOAD_FOLDER'], filename)
 
         if filename.endswith('.har'):
+            file_base_name = filename[:-4]
+            out_put_file = f'{file_base_name}.xmind'
+
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            convert_har_to_xmind(input_har_path, join(app.config['UPLOAD_FOLDER'], out_put_file))
-            return send_from_directory(app.config['UPLOAD_FOLDER'], out_put_file, as_attachment=True)
+            convert_har_to_xmind(input_file_path, join(app.config['UPLOAD_FOLDER'], out_put_file))
 
         elif filename.endswith('.json'):
+            file_base_name = filename[:-5]
+            out_put_file = f'{file_base_name}.xmind'
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            convert_swagger_to_xmind(input_har_path, join(app.config['UPLOAD_FOLDER'], out_put_file))
-            return send_from_directory(app.config['UPLOAD_FOLDER'], out_put_file, as_attachment=True)
+            convert_swagger_to_xmind(input_file_path, join(app.config['UPLOAD_FOLDER'], out_put_file))
         else:
             g.error = "不支持该文件类型: {}".format(','.join(g.invalid_files))
+
+        # 创建响应
+        response = send_from_directory(app.config['UPLOAD_FOLDER'], out_put_file, as_attachment=True,
+                                       mimetype="application/octet-stream")
+        response.headers["X-Download-Filename"] = out_put_file
+        # response.headers["Content-Type"] = 'multipart/form-data'
+        return response
 
     else:
         return "No file was uploaded."
 
-    
+
 @app.route('/xmind2case', methods=['GET', 'POST'])
 def xmind2case(download_xml=None):
     g.invalid_files = []
@@ -261,7 +269,6 @@ def xmind2case(download_xml=None):
         return redirect(url_for('preview_file', filename=g.filename))
     else:
         return render_template('xmind2case.html', records=list(get_records()))
-
 
 
 @app.route('/uploads/<filename>')

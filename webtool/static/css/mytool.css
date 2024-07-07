@@ -1,0 +1,30 @@
+#drop-zone {
+    margin: 0 auto; /* 水平居中 */
+    width: 300px;
+    height: 200px;
+    border: 2px dashed #ccc;
+    text-align: center;
+    line-height: 200px;
+    transition: border-color 0.3s ease;
+}
+
+/*#drop-zone.highlight {*/
+/*    border-color: #008CBA; !* 改变高亮时的边框颜色 *!*/
+/*}*/
+
+/*#drop-zone {*/
+/*    width: 300px;*/
+/*    height: 200px;*/
+/*    border: 2px dashed #808080; !* 更改为灰色 *!*/
+/*    background-color: #f9f9f9; !* 添加淡灰色背景 *!*/
+/*    color: #333; !* 文字颜色 *!*/
+/*    text-align: center;*/
+/*    line-height: 200px;*/
+/*    transition: border-color 0.3s ease;*/
+/*}*/
+
+#drop-zone.highlight {
+    border-color: #FFA500  !important; /* 高亮时的边框颜色更改为橙色 */
+    background-color: #f9f9f9 !important; /* 添加淡灰色背景 */
+
+}
