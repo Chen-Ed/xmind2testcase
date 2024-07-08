@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JSON Editor</title>
+    <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static',filename='css/custom.css') }}">
+    <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static',filename='css/pure-min.css') }}">
+    <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static',filename='css/json_Editor.css') }}">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h1>JSON Editor</h1>
+<div class="splash-container">
+    <div class="left-section">
+        <h2>input</h2>
+        <div class="input-section">
+            <label for="json_path">Jsonpath:</label>
+            <input type="text" id="json_path" placeholder="Enter jsonpath">
+
+            <label for="replace_value">Replace value:</label>
+            <input type="text" id="replace_value" placeholder="Enter replace value">
+        </div>
+
+        <div class="button-section">
+            <button id="demo_input" class="pure-button ">DEMO</button>
+            <button id="clearInput" class="pure-button ">Clear Input</button>
+            <button id="select_json" class="pure-button ">Select JSON</button>
+            <button id="replace_json" class="pure-button ">Replace JSON</button>
+        </div>
+        <textarea id="jsonInput" rows="10" cols="50" placeholder="Enter your JSON here..."></textarea>
+    </div>
+
+    <button id="midlle-button" class='midlle-button'><</button>
+
+    <div class="right-section">
+        <h2>Output</h2>
+        <div class="response-section">
+            <button id="clearResponse" class="pure-button ">Clear Response</button>
+            <button id="copyResponse" class="pure-button ">Copy Response</button>
+        </div>
+
+        <textarea id="response" rows="10" cols="50" placeholder="response in here..."></textarea>
+    </div>
+</div>
+    <script src="{{ url_for('static', filename='js/json_Editor.js') }}"></script>
+</body>
+</html>

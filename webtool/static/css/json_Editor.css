@@ -1,0 +1,32 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.splash-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* 设置父容器的高度 */
+    height: 100vh; /* 或者其他固定高度 */
+}
+
+.left-section, .right-section {
+    flex: 1;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* ... previous styles ... */
+
+textarea {
+    width: 100%;
+    height: 550px;
+}
+.middle-button {
+    width: 100px;
+    height: 70px;
+}
+
+.response-section {
+    margin-bottom: 20px;
+}

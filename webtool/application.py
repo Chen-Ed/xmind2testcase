@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # _*_ coding:utf-8 _*_
+import datetime
+import json
 import sys
+import time
 
 sys.path.append("..")
 import logging
@@ -19,7 +22,7 @@ from flask import Flask, request, send_from_directory, g, render_template, abort
 
 from mytool.har2xmind import *
 from mytool.swagger2xmind import *
-
+from mytool.json_tools import *
 here = os.path.abspath(os.path.dirname(__file__))
 log_file = os.path.join(here, 'running.log')
 # log handler
@@ -240,6 +243,51 @@ def api2xmind():
 
     else:
         return "No file was uploaded."
+
+
+@app.route('/json_editor', methods=['GET', 'POST'])
+def json_editor():
+    return render_template('json_editor.html')
+
+
+@app.route('/json_editor/select_json', methods=['POST'])
+def select_json():
+    # 获取 JSON 数据
+    data = request.get_json()
+    json_input = data['json']
+    json_path = data['json_path']
+    if json_path != '':
+        try:
+            json_input = json.loads(json_input)
+            # 返回jsonpath_ng搜索到的结果
+            result = find_json_value(json_input, json_path)
+
+            return json.dumps(result,indent=2 ,ensure_ascii=False)
+        except json.JSONDecodeError:
+            return 'JSON格式错误' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    else:
+        return '请输入jsonpath'
+
+
+@app.route('/json_editor/replace_json', methods=['POST'])
+def replace_json():
+    # 获取 JSON 数据
+    data = request.get_json()
+    json_input = data['json']
+    json_path = data['json_path']
+    replace_value = data['replace_value']
+
+    if json_path != '':
+        try:
+            json_dict = json.loads(json_input)
+            # 返回jsonpath_ng搜索到的结果
+            result = replace_json_elements(json_dict, json_path, replace_value)
+
+            return json.dumps(result,indent=2 ,ensure_ascii=False)
+        except json.JSONDecodeError:
+            return 'JSON格式错误' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    else:
+        return '请输入jsonpath'
 
 
 @app.route('/xmind2case', methods=['GET', 'POST'])
