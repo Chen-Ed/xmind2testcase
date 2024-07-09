@@ -15,6 +15,10 @@ $(document).ready(function() {
         $('#response').val('');
     });
 
+    $('#midlle-button_right2left').click(function() {
+        $('#jsonInput').val($('#response').val());
+    });
+
     // Copy response button click event
     $('#copyResponse').click(function() {
         var responseText = $('#response').val();
@@ -27,7 +31,6 @@ $(document).ready(function() {
             });
     });
 
-    $(document).ready(function() {
     // Select JSON button click event
     $('#select_json').click(function() {
         var json_path = $('#json_path').val();
@@ -64,7 +67,31 @@ $(document).ready(function() {
             }
         });
     });
-});
+
+    $('#formatButton').prop('disabled', true).css('background-color', '#cccccc');
+//    $('#formatButton').on('click', function() {
+//        let input = $('#jsonInput').val();
+//        let output = $('#response').val();
+//
+//        try {
+////            格式化输入框
+//            let json = JSON.parse(input);
+////            let formattedJson = JSON.stringify(json, null, 4);
+////            $('#jsonInput').text(formattedJson);
+//            $('#jsonInput').JSONView(json, { collapsed: true, nl2br: true, recursive_collapser: true,  key_marks: true, link_marks: true });
+//            $('#json-renderer').jsonViewer(input, options);
+//
+////            格式化输出框
+////            json = JSON.parse(output);
+////            formattedJson = JSON.stringify(json, null, 4);
+////            $('#response').text(formattedJson);
+//            console.log('JSON 格式化成功');
+//        } catch (error) {
+//
+//            console.log(error);
+//
+//        }
+//    });
 
 
 });

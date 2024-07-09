@@ -7,7 +7,11 @@
     <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static',filename='css/pure-min.css') }}">
     <link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static',filename='css/json_Editor.css') }}">
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/json_Editor.js') }}"></script>
+    <!-- 引入 JSONView -->
+<!--    <link href="https://cdn.bootcdn.net/ajax/libs/jquery-jsonview/1.2.3/jquery.jsonview.css" rel="stylesheet">-->
+<!--    <script src="https://cdn.bootcdn.net/ajax/libs/jquery-jsonview/1.2.3/jquery.jsonview.js"></script>-->
 </head>
 <body>
 <h1>JSON Editor</h1>
@@ -25,13 +29,14 @@
         <div class="button-section">
             <button id="demo_input" class="pure-button ">DEMO</button>
             <button id="clearInput" class="pure-button ">Clear Input</button>
+            <button id="formatButton" class="pure-button ">Format Json</button>
             <button id="select_json" class="pure-button ">Select JSON</button>
             <button id="replace_json" class="pure-button ">Replace JSON</button>
         </div>
         <textarea id="jsonInput" rows="10" cols="50" placeholder="Enter your JSON here..."></textarea>
     </div>
 
-    <button id="midlle-button" class='midlle-button'><</button>
+    <button id="midlle-button_right2left" class='midlle-button'><</button>
 
     <div class="right-section">
         <h2>Output</h2>
@@ -42,7 +47,7 @@
 
         <textarea id="response" rows="10" cols="50" placeholder="response in here..."></textarea>
     </div>
+
 </div>
-    <script src="{{ url_for('static', filename='js/json_Editor.js') }}"></script>
 </body>
 </html>

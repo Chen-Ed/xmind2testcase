@@ -28,17 +28,15 @@
         <div class="tools-list">
             <!-- 假设的工具列表 -->
             <div class="tool-item">
+                <h3>Json编辑工具</h3>
+                <a href="{{ url_for('json_editor') }}"  class="pure-button ">Enter</a>
+            </div>
+            <div class="tool-item">
                 <h3>Har/Json文件转换为Xmind文件。</h3>
-{#                <a href="{{ url_for('har2xmind') }}"  class="pure-button ">Har to Xmind 工具</a>#}
                 <form action="{{ url_for('api2xmind') }}" method="POST" enctype="multipart/form-data">
-{#                    <label id="file-label" for="file" class="pure-label">#}
-{#                        --> 点击这里选择您的Har/Swagger文件 <--#}
-{#                    </label>#}
-{#                    <input id="file" accept=".har,.json" type="file" name="file" required/><br>#}
                     <div id="drop-zone" style="width: 300px; height: 200px; border: 2px dashed #ccc; text-align: center; line-height: 200px;">
                         将文件拖到此处
                     </div>
-{#                    <input type="submit" value="开始转换" class="pure-button">#}
                 </form>
                 <script>
                     document.getElementById('drop-zone').addEventListener('dragover', function(event) {
@@ -94,18 +92,11 @@
                 </script>
 
             </div>
-{#            <div class="tool-item">#}
-{#                <h3>Swagger3.0 json文件转换为xmind文件。</h3>#}
-{#                <a href="{{ url_for('xmind2case') }}"  class="pure-button ">Swagger to Xmind 工具</a>#}
-{#            </div>#}
             <div class="tool-item">
                 <h3>Xmind 转换为各种格式 TestCase 文件。</h3>
-                <a href="{{ url_for('xmind2case') }}"  class="pure-button ">Xmind to TestCase 工具</a>
+                <a href="{{ url_for('xmind2case') }}"  class="pure-button ">Enter</a>
             </div>
-            <div class="tool-item">
-                <h3>json Editor 文件。</h3>
-                <a href="{{ url_for('json_editor') }}"  class="pure-button ">json编辑 工具</a>
-            </div>
+
         </div>
     </div>
 </div>
