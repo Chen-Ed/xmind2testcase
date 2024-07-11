@@ -1,4 +1,4 @@
-#drop-zone {
+[id^="drop-zone"] {
     margin: 0 auto; /* 水平居中 */
     width: 300px;
     height: 200px;
@@ -8,23 +8,25 @@
     transition: border-color 0.3s ease;
 }
 
-/*#drop-zone.highlight {*/
-/*    border-color: #008CBA; !* 改变高亮时的边框颜色 *!*/
-/*}*/
-
-/*#drop-zone {*/
-/*    width: 300px;*/
-/*    height: 200px;*/
-/*    border: 2px dashed #808080; !* 更改为灰色 *!*/
-/*    background-color: #f9f9f9; !* 添加淡灰色背景 *!*/
-/*    color: #333; !* 文字颜色 *!*/
-/*    text-align: center;*/
-/*    line-height: 200px;*/
-/*    transition: border-color 0.3s ease;*/
-/*}*/
-
-#drop-zone.highlight {
+[id^="drop-zone"].highlight {
     border-color: #FFA500  !important; /* 高亮时的边框颜色更改为橙色 */
     background-color: #f9f9f9 !important; /* 添加淡灰色背景 */
 
 }
+.tools-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* 自适应列宽 */
+    gap: 20px; /* 列间距 */
+    overflow-y: auto;
+    max-height: calc(100vh - 100px); /* 100vh 是视口高度，减去100px是为了预留页眉或页脚的空间 */
+}
+
+.tool-item {
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 1em;
+    padding: 1em;
+}
+
+
+

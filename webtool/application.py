@@ -245,7 +245,7 @@ def api2xmind():
         return "No file was uploaded."
 
 
-@app.route('/json_editor', methods=['GET', 'POST'])
+@app.route('/json_editor', methods=['GET'])
 def json_editor():
     return render_template('json_editor.html')
 
@@ -318,6 +318,36 @@ def xmind2case(download_xml=None):
     else:
         return render_template('xmind2case.html', records=list(get_records()))
 
+
+@app.route('/xmind_Simplified_2_Traditional', methods=['POST'])
+def xmind_Simplified_2_Traditional():
+    file = request.files['file']
+    if file:
+        # 处理文件
+        filename = request.files['file'].filename
+        input_file_path = join(app.config['UPLOAD_FOLDER'], filename)
+
+        if filename.endswith('.xmind'):
+            file_base_name = filename[:len('.xmind')]
+            out_put_file = f'{file_base_name}_Tra.xmind'
+
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            # 开始处理
+            # convert_har_to_xmind(input_file_path, join(app.config['UPLOAD_FOLDER'], out_put_file))
+
+        else:
+            g.error = "不支持该文件类型: {}".format(','.join(g.invalid_files))
+
+        # 创建响应
+        response = send_from_directory(app.config['UPLOAD_FOLDER'], out_put_file, as_attachment=True,
+                                       mimetype="application/octet-stream")
+        response.headers["X-Download-Filename"] = out_put_file
+        # response.headers["Content-Type"] = 'multipart/form-data'
+        return response
+
+    else:
+        return "No file was uploaded."
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
