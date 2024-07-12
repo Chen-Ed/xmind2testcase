@@ -35,18 +35,21 @@
                     <h3>Xmind 转换为各种格式 TestCase 文件。</h3>
                     <a href="{{ url_for('xmind2case') }}"  class="pure-button ">Enter</a>
                 </div>
+
                 <div class="tool-item">
                     <h3>Xmind简体转繁体</h3>
-                    <form action="{{ url_for('xmind_Simplified_2_Traditional') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ url_for('transale_xmind') }}" method="POST" enctype="multipart/form-data">
                         <div id="drop-zone2" style="width: 300px; height: 200px; border: 2px dashed #ccc; text-align: center; line-height: 200px;">
                             将文件拖到此处
                         </div>
                     </form>
                 </div>
+
             </div>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='js/my_tool.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/my_tool.js') }}"></script>
 
 
 </body>

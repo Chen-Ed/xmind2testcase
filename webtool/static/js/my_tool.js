@@ -1,5 +1,11 @@
-function setupDropZone(dropZoneId, url) {
-    const $dropZone = $('#' + dropZoneId);
+function setupDropZone(dropzone) {
+    '设置拖入文件区域'
+    const $tool_item = dropzone.closest('.tool-item');
+
+    const $form = $tool_item.find('form');
+    const $dropZone = $tool_item.find('[id^="drop-zone"]');
+
+    const url = $form.attr('action');
 
     $dropZone.on('dragover', function(event) {
         event.preventDefault();
@@ -18,6 +24,23 @@ function setupDropZone(dropZoneId, url) {
         const formData = new FormData();
         formData.append('file', file);
 
+        const loading = $('<div class="loading"><span></span></div>');
+
+        $(document).ajaxStart(function() {
+            // 显示 loading div
+            $form.append(loading)
+            // 隐藏 form
+            $form.hide();
+        });
+
+        // 当 AJAX 请求结束时
+        $(document).ajaxStop(function() {
+            // 显示 loading div
+            $form.find('div.loading')
+            // 隐藏 form
+            $form.show();
+        });
+
         $.ajax({
             type: 'POST',
             url: url,
@@ -29,7 +52,7 @@ function setupDropZone(dropZoneId, url) {
             },
             success: function(data, textStatus, jqXHR) {
                 const url = window.URL.createObjectURL(new Blob([data]));
-                const filename = jqXHR.getResponseHeader('Content-Disposition').split('filename=')[1];
+                const filename = jqXHR.getResponseHeader('X-Download-Filename');
                 const link = document.createElement('a');
                 link.href = url;
                 link.setAttribute('download', decodeURIComponent(filename));
@@ -49,8 +72,6 @@ function setupDropZone(dropZoneId, url) {
 
 $(document).ready(function() {
     $('[id^="drop-zone"]').each(function() {
-        const dropZoneId = this.id;
-        const url = $(this).closest('form').attr('action');
-        setupDropZone(dropZoneId, url);
+        setupDropZone($(this));
     });
 });
