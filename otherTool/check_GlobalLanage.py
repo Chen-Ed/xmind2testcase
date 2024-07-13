@@ -1,86 +1,71 @@
-import json
-import time
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 import re
+from playwright.sync_api import Playwright, sync_playwright
 
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-
-driver_path=ChromeDriverManager().install() #下载latest release版本的chromedriver，并返回其在本机的下载存储路径
 # 指定要访问的页面列表
 url_list = ["https://open-uat.nwplatform.com.cn/",
-"https://open-uat.nwplatform.com.cn/appStore",
-"https://open-uat.nwplatform.com.cn/open-capability",
-"https://open-uat.nwplatform.com.cn/developer/doc",
-"https://open-uat.nwplatform.com.cn/developer/search",
-"https://open-uat.nwplatform.com.cn/account/notify-message",
-"https://open-uat.nwplatform.com.cn/account/info",
-"https://open-uat.nwplatform.com.cn/developer/console",
-"https://open-uat.nwplatform.com.cn/appStore/f13d6a9626ea4b25aaf46819616c14b6",
-"https://open-uat.nwplatform.com.cn/developer/doc?docCode=b5798f2e&category=GENERAL_ABILITY"]
+            "https://open-uat.nwplatform.com.cn/appStore",
+            "https://open-uat.nwplatform.com.cn/open-capability",
+            "https://open-uat.nwplatform.com.cn/developer/doc",
+            "https://open-uat.nwplatform.com.cn/developer/search",
+            "https://open-uat.nwplatform.com.cn/account/notify-message",
+            "https://open-uat.nwplatform.com.cn/account/info",
+            "https://open-uat.nwplatform.com.cn/developer/console",
+            "https://open-uat.nwplatform.com.cn/appStore/f13d6a9626ea4b25aaf46819616c14b6",
+            "https://open-uat.nwplatform.com.cn/developer/doc?docCode=b5798f2e&category=GENERAL_ABILITY"]
 
-result_list = []
-
-# 创建Chrome驱动
-
-# 创建ChromeOptions对象
-# options = webdriver.ChromeOptions()
-# # 设置请求头参数
-# options.add_argument('user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"')
-
-driver = webdriver.Chrome(service=Service(driver_path)) 
+result_list = {}
+lang = {"简体中文": r'[\u4e00-\u9fa5]',
+        "繁体中文": r'[\u4e00-\u9fa5\u3400-\u4DBF\uFA0E-\uFA2D]',
+        "韩语": r'[\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uD7B0-\uD7FF]',
+        "日语": r'[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\u3005\u3099\u309A\u31F0-\u31FF]'}
 
 
+class TextChecker:
+    def __init__(self, playwright: Playwright):
+        self.browser = playwright.chromium.launch()
+        self.page = self.browser.new_page()
 
-# 遍历访问所有页面
+    def __enter__(self):
+        return self
 
-driver.get("https://open-uat.nwplatform.com.cn/login")
-driver.set_window_size(1936, 1056)
-driver.find_element(By.NAME, "password").send_keys("Qq123456")
-driver.find_element(By.NAME, "email").send_keys("alanxu@nwcs.com.hk")
-driver.find_element(By.CSS_SELECTOR, "div:nth-child(3) > .el-button").click()
-time.sleep(3)
-driver.find_element(By.XPATH, "//div[2]/div/div/i").click()
-time.sleep(1)
-driver.find_element(By.XPATH, "/html/body/ul/div[1]/p[2]/span").click()
-driver.find_element(By.XPATH, "//li[4]/span/span").click()
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.browser.close()
 
-for url in url_list:
-    driver.get(url)
-    # 等待页面加载完成
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//body')))
-    # 获取页面上的所有元素
-    elements = driver.find_elements(By.XPATH,"//*")
-    thisUrl_reasult = {'url': url, 'has_chinese': False,"content":[]}
-    # 检查页面中是否包含中文 遍历每个元素并输出其content属性
-    for element in elements:
-        try:
-            content = element.getText()
-            if re.findall('[\u4e00-\u9fa5]+', content):
-                # ele_source =  driver.execute_script("return arguments[0].outerHTML;", element)
-                thisUrl_reasult["content"].append({element.getTagName():content})
-                thisUrl_reasult["has_chinese"] = True
-        except:
-            print(f"查看元素内容出现错误！{element.getTagName()}")
+    def goto(self, url: str):
+        self.page.goto(url)
 
-    result_list.append(thisUrl_reasult)
-    time.sleep(0.5)
+    def check_east_asian_text(self):
+        body_text = self.page.inner_text('body')
+        results = {
+            'simplified_chinese': bool(re.search(r'[\u4e00-\u9fa5]', body_text)),
+            'traditional_chinese': bool(re.search(r'[\u4e00-\u9fa5\u3400-\u4DBF\uFA0E-\uFA2D]', body_text)),
+            'korean': bool(
+                re.search(r'[\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uD7B0-\uD7FF]', body_text)),
+            'japanese': bool(
+                re.search(r'[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\u3005\u3099\u309A\u31F0-\u31FF]', body_text))
+        }
+        return results
 
-# 关闭Chrome驱动
-driver.quit()
+    def find_text_positions(self, lang):
+        selectors = ['h1', 'h2', 'h3', 'p', 'li', 'span', 'a']
+        results = {k: [] for k in selectors}
+        for selector in selectors:
+            elements = self.page.query_selector_all(selector)
+            for element in elements:
+                text = element.inner_text()
+                if re.search(lang, text):
+                    results[selector].append(text)
+        return results
 
-# 输出所有结果
-print(result_list)
 
-with open(r'.\check_GlobalLanage.json',encoding='utf8',mode='w+') as f:
-    
-    print(json.dumps(result_list),file=f)
+with sync_playwright() as playwright:
+    checker = TextChecker(playwright)
+    for url in url_list:
+        checker.goto(url)
+        # presence_results = checker.check_east_asian_text()
+        # print("Presence of East Asian texts:", presence_results)
 
+        position_results = checker.find_text_positions(lang=lang.get('简体中文'))
+        # print("Positions containing East Asian texts:", position_results)
+        result_list[url] = position_results
+        pass
