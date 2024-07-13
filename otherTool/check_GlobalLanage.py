@@ -57,15 +57,15 @@ class TextChecker:
                     results[selector].append(text)
         return results
 
+if __name__ == '__main__':
+    with sync_playwright() as playwright:
+        checker = TextChecker(playwright)
+        for url in url_list:
+            checker.goto(url)
+            # presence_results = checker.check_east_asian_text()
+            # print("Presence of East Asian texts:", presence_results)
 
-with sync_playwright() as playwright:
-    checker = TextChecker(playwright)
-    for url in url_list:
-        checker.goto(url)
-        # presence_results = checker.check_east_asian_text()
-        # print("Presence of East Asian texts:", presence_results)
-
-        position_results = checker.find_text_positions(lang=lang.get('简体中文'))
-        # print("Positions containing East Asian texts:", position_results)
-        result_list[url] = position_results
-        pass
+            position_results = checker.find_text_positions(lang=lang.get('简体中文'))
+            # print("Positions containing East Asian texts:", position_results)
+            result_list[url] = position_results
+            pass
