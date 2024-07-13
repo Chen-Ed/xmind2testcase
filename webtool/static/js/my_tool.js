@@ -29,16 +29,15 @@ function setupDropZone(dropzone) {
         $(document).ajaxStart(function() {
             // 显示 loading div
             $form.append(loading)
-            // 隐藏 form
-            $form.hide();
+            // 隐藏 $dropZone
+            $dropZone.hide();
         });
-
         // 当 AJAX 请求结束时
         $(document).ajaxStop(function() {
-            // 显示 loading div
-            $form.find('div.loading')
-            // 隐藏 form
-            $form.show();
+            //  隐藏loading div
+            $form.find('div.loading').remove()
+            //  显示$dropZone
+            $dropZone.show();
         });
 
         $.ajax({
@@ -51,6 +50,8 @@ function setupDropZone(dropzone) {
                 responseType: 'blob'
             },
             success: function(data, textStatus, jqXHR) {
+
+
                 const url = window.URL.createObjectURL(new Blob([data]));
                 const filename = jqXHR.getResponseHeader('X-Download-Filename');
                 const link = document.createElement('a');
@@ -66,7 +67,9 @@ function setupDropZone(dropzone) {
                 console.log('文件上传失败');
                 console.log('Error: ' + errorThrown);
             }
+
         });
+
     });
 }
 
