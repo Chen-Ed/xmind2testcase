@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import itertools
 import pyperclip
 import re
@@ -46,7 +47,7 @@ def insertStr(templeStr:str,combinations:list):
         for match in matches:
             index = int(match[1])
             if index < len(my_list):
-                input_string = input_string.replace(match, my_list[index],1)
+                input_string = input_string.replace(match, f'【{my_list[index]}】',1)
         # 替换完毕后收集起来
         resultList.append(input_string)
 
@@ -58,22 +59,30 @@ def insertStr(templeStr:str,combinations:list):
 
 
 if __name__ == '__main__':
-    # a = '【增加】,【删除】,【更改】,【查看】'.split(',')
-    b = '【公司】,【部门】,【个人】'.split(',')
-    c = '【模糊】,【精确】 '.split(',')
-    a = '【查看】,【导出】'.split(',')
-    d = '【操作方式一】,【操作方式二】'.split(',')
-    e = '【部分】,【全部】'.split(',')
-    f = '【增加】,【删除】,【更改】'.split(',')
-    ff = '【新增】,【修改】,【查看】'.split(',')
-    g = '【用户】，【角色】，【权限】，【部门】，【消息\公告】，【公司】，【项目】，【操作记录】，【岗位】'.split('，')
+    # a = '增加,删除,更改,查看'.split(',')
+    b = '公司,部门,个人'.split(',')
+    c = '模糊,精确'.split(',')
+    a = '查看,导出'.split(',')
+    d = '操作方式一,操作方式二'.split(',')
+    e = '部分,全部'.split(',')
+    f = '增加,删除,更改'.split(',')
+    ff = '新增,修改,查看'.split(',')
+    g = '用户，角色，权限，部门，消息\公告，公司，项目，操作记录，岗位'.split('，')
     h = '新增，修改，查看，导出'.split('，')
-    i = '【项目列表】,【项目详情信息】,【项目成员】,【项目关联公司】,【项目关联公司详情信息】,【项目隐私协议】,【项目隐私协议-历史版本】'.split(',')
-    j = '【角色】,【角色名称】,【角色权限配置】,【角色列表】,【角色详情】,【角色权限配置详情】,【个人页面，角色指派信息】'.split(',')
+    i = '项目列表,项目详情信息,项目成员,项目关联公司,项目关联公司详情信息,项目隐私协议,项目隐私协议-历史版本'.split(',')
+    j = '角色,角色名称,角色权限配置,角色列表,角色详情,角色权限配置详情,个人页面，角色指派信息'.split(',')
+    角色类型 = '通用，项目，公司'.split('，')
+    k = '人员名称，邮箱'.split('，')
+    不切换的页面 = '系统设置，应用中心，消息中心，我的应用，个人设定'.split('，')
+    登录方式='AAS，邮箱+密码，手机+密码，手机+验证码，免密登录'.split('，')
 
-    templeStr = """在NWCS BU中，[0] [1]数据，预期成功
-	[0] [1]数据
-		成功"""
-    inputList=[ff,g]
-    combinations = get_sorted_combinations(inputList,ff)
+    templeStr = """打开登录页面，页面根据portal/auth/get-login-type接口显示登录方式([0])，预期页面显示登录方式与接口返回一致。
+	打开登录页面
+		成功
+	页面请求portal/auth/get-login-type接口
+		成功
+	查看页面的登录方式
+		页面显示登录方式与接口返回一致"""
+    inputList=[登录方式]
+    combinations = get_sorted_combinations(inputList,登录方式)
     insertStr(templeStr,combinations)

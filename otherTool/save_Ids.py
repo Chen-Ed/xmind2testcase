@@ -25,7 +25,7 @@ class dataIter():
         sleep(self.delay)
 
         if dataStore == [] or dataStore is None:
-            print('没有数据了，采集结束了。')
+            print('没有数据了，采集结束。')
             raise StopIteration
         else:
             self.page += 1
@@ -346,30 +346,38 @@ def usr_info(page, auth_token, base_url) -> list:
     response = requests.request("POST", url, headers=headers, data=payload).json()
 
     assert response['code'] == 200
-    res = [[i['guid'], i['email'], i['phone'], i['status'], i['resign_state']] for i in response['data']['list']]
+    res = [[i['guid'], i['email'], i['phone'], i['status'], i.get('system_status'), i.get('resign_state'), i['name'],
+            i['en_name'], i['chinese_name']] for i in response['data']['list']]
     if page == 1:
-        res.insert(0, ['guid', 'email', 'phone', 'status', 'resign_state'])
+        res.insert(0, ['guid', 'email', 'phone', 'status', 'system_status', 'resign_state', 'name', 'en_name',
+                       'chinese_name'])
     return res
 
 
 if __name__ == '__main__':
-    base_url = 'https://1p-portal-k11-uat.nwplatform.com.cn/portal-uat'
+    base_url = 'https://k11.xigmapas.com/portal-pro'
+    # base_url = 'https://1p-portal-k11-uat.nwplatform.com.cn/portal-uat'
     # base_url = 'https://1p-portal-testk11-uat.nwplatform.com.cn/portal-uat'
-    auth_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsdWNhc19BIiwiYnVfZ3VpZCI6Ijk5NWY5ZDViNWE5MTExZWQ4NDUwMDAxNjNlMTc1NGFlIiwidXNlcl90eXBlIjoic3RhZmYiLCJ1c2VyX2d1aWQiOiJlNzVlMzNmNDQxOTc0ZWY5OTVhNzQzNTgxNmI2ZGNlOCIsImp0aSI6IjAzYjQwNTUzOTM3NTQ0NzNiZDFjZWY1YWQ0NWFkODg3Iiwic3RhZmZfZ3VpZCI6ImU3NWUzM2Y0NDE5NzRlZjk5NWE3NDM1ODE2YjZkY2U4In0.UmuIYVtmmjgXfKuc5fXndZJE9kQ-1wgzCKKqbsglf4M'
+    auth_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJKWSBZYW5nIEppYW4gWWUiLCJidV9ndWlkIjoiOTk1ZjlkNWI1YTkxMTFlZDg0NTAwMDE2M2UxNzU0YWUiLCJ1c2VyX3R5cGUiOiJzdGFmZiIsInVzZXJfZ3VpZCI6IjM0MzJjN2Y0NWQ3MDQ5YmVhMzY4MzMxMWUzN2FjZmZkIiwianRpIjoiZTNhYmVmYTcyNGFiNGUxYzg3OWI3NjZmNTAzYmEzMjEiLCJzdGFmZl9ndWlkIjoiMzQzMmM3ZjQ1ZDcwNDliZWEzNjgzMzExZTM3YWNmZmQifQ.wZjQkgzFv4cQ96s1LIO-XKVCGk0nk0h0bXqRE3MwYSc'
     # for f in [company_id,project_id,staff_id,role_id,app_id]:
     for f in [usr_info]:
-        ids = dataIter(auth_token, f, base_url)
+        ids = dataIter(auth_token, usr_info, base_url)
         dataStore = []
-        for i in ids:
-            dataStore.extend(i)
-            print(f"共收集用户数据{len(dataStore)}条")
-        fileName = str(f.__name__) + datetime.now().strftime('%Y%m%d_%H%M%S') + '.csv'
-        csv_file = os.path.join(r'C:/Users/te_chenyingdong/Desktop', fileName)
-        with open(csv_file, mode='w+', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow([f.__name__])
-            for i in dataStore:
-                writer.writerow(i)
+        try:
+            for i in ids:
+                dataStore.extend(i)
+                print(f"共收集用户数据{len(dataStore)}条")
+        except:
+            print(f'获取数据失败！')
+            pass
+        finally:
+            fileName = str(f.__name__) + datetime.now().strftime('%Y%m%d_%H%M%S') + '.csv'
+            csv_file = os.path.join(r'C:/Users/te_chenyingdong/Desktop', fileName)
+            with open(csv_file, mode='w+', newline='', encoding='utf8') as file:
+                writer = csv.writer(file)
+                writer.writerow([f.__name__])
+                for i in dataStore:
+                    writer.writerow(i)
 
 # if __name__=='__main__':
 #     base_url = 'https://1p-portal-k11-uat.nwplatform.com.cn/portal-uat'
