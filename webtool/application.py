@@ -416,7 +416,7 @@ def delete_file(filename, record_id):
         abort(404)
     else:
         delete_record(filename, record_id)
-    return redirect('/')
+    return redirect('/xmind2case')
 
 
 @app.errorhandler(Exception)

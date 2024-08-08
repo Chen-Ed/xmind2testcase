@@ -103,7 +103,11 @@ def recurse_parse_testcase(case_dict, parent=None):
         if not parent:
             parent = []
         # 自己加的代码 用例标题中 使用【】包裹
-        case_dict['title'] = f"【{case_dict['title']}】"
+        # case_dict['title'] = f"【{case_dict['title']}】"
+        # 自己加的代码 用例标题中 使用<>包裹
+        # case_dict['title'] = f"<{case_dict['title']}>"
+        # 自己加的代码 用例标题中 使用[]包裹
+        case_dict['title'] = f"[{case_dict['title']}]"
         parent.append(case_dict)
 
         for child_dict in case_dict.get('topics', []):

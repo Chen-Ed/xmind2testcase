@@ -24,7 +24,13 @@ def get_XmindMission(Model, needs: list):
 
 
 if __name__ == '__main__':
-    needs = """IMOH	全局增加登录用户安全水印
+    needs = """IJW8	IP安全围栏
+IMND	部门组织架构过滤PMS来源的层级树
+IMNF	PORTAL显示的人员状态字段调整
+IMVB	补充旧有应用入口和权限至XigmaCloud应用中心
+IMWJ	增加BU标识，方便用户知晓当前登录的BU
+IMYA	E-LEASING入口应用补充至XC
+
 """.strip().replace('	', ' ').split('\n')
-    get_GiteeMission('XC-Portal 2.2（私有化部署）', needs)
-    get_XmindMission('Portal/2.2.0/', needs)
+    get_GiteeMission('XC-Portal 2.2.1', needs)
+    get_XmindMission('Portal/2.2.1/', needs)
