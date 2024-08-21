@@ -5,6 +5,7 @@ def get_GiteeMission(PJ_name, needs: list):
     print(get_GiteeMission.__doc__.strip().center(60, '*'))
     missions = []
     missions.append('【测试】' + f'【{PJ_name}】 功能测试')
+    missions.append('【测试】' + f'【{PJ_name}】 用例执行')
     missions.append('【测试】' + f'【{PJ_name}】 回归测试')
     missions.append('【测试】' + f'【{PJ_name}】 用例设计')
     missions += ['【测试】' + f"""【{PJ_name}】#{i} 功能测试""" for i in needs]
@@ -23,15 +24,11 @@ def get_XmindMission(Model, needs: list):
 
 
 if __name__ == '__main__':
-    needs = """IKPS	应用开放权限问题设置
-IL0D	应用列表补充应用分类
-IL8T	应用列表补充搜素功能，搜索应用名称
-ILAS	应用列表补充两个HR弹窗应用迁移
-ILAX	角色权限配置，由于应用量较多，需要进行分区进行查看
-ILGZ	【portal】修改有效邮件的校验规则支持nw-si
-ILOK	创建NWCS Portal BU
-ILWW	调整角色名字到70个字，发现目前有角色是已超过30个字符
-ILY9	Portal项目编码重置确认
+    needs = """IN08	应用展示增加关闭显示选项
+IN0H	项目配置增加非营业时间和假期日历信息
+INIQ	处理A.Connect中WS切换XigmaCloud接口问题
+INJ9	处理A.Connect 引用 WS页面替换
+INJH	XC-UAT登录，增加lease开发人员接收验证码邮件白名单
 """.strip().replace('	', ' ').split('\n')
-    get_GiteeMission('XC-Portal 2.1.6', needs)
-    get_XmindMission('Portal/2.1.6/', needs)
+    get_GiteeMission('XC-Portal 2.3', needs)
+    get_XmindMission('Portal/2.3.0/', needs)

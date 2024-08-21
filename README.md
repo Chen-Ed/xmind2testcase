@@ -2,6 +2,14 @@
 
 > **XMind2TestCase** 工具，提供了一个高效测试用例设计的解决方案！
 
+安装依赖：    
+```pip install -r requirements.txt```
+
+依赖更新：
+> 先安装更新插件```pip install pipreqs```
+> 输入命令```pipreqs . --pypi-server http://mirrors.aliyun.com/pypi/simple/ --force```
+
+
 
 ### 一、背景
 

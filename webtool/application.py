@@ -19,10 +19,12 @@ from xmind2testcase.gitee import xmind_to_gitee_csv_file
 from xmind2testcase.testlink import xmind_to_testlink_xml_file
 from xmind2testcase.utils import get_xmind_testsuites, get_xmind_testcase_list
 from flask import Flask, request, send_from_directory, g, render_template, abort, redirect, url_for
-
+from urllib.parse import quote
 from mytool.har2xmind import *
 from mytool.swagger2xmind import *
 from mytool.json_tools import *
+from mytool.translate_xmind import translation_xmind
+
 here = os.path.abspath(os.path.dirname(__file__))
 log_file = os.path.join(here, 'running.log')
 # log handler
@@ -237,7 +239,7 @@ def api2xmind():
         # 创建响应
         response = send_from_directory(app.config['UPLOAD_FOLDER'], out_put_file, as_attachment=True,
                                        mimetype="application/octet-stream")
-        response.headers["X-Download-Filename"] = out_put_file
+        response.headers["X-Download-Filename"] = quote(out_put_file.encode('utf-8'))
         # response.headers["Content-Type"] = 'multipart/form-data'
         return response
 
@@ -245,7 +247,7 @@ def api2xmind():
         return "No file was uploaded."
 
 
-@app.route('/json_editor', methods=['GET', 'POST'])
+@app.route('/json_editor', methods=['GET'])
 def json_editor():
     return render_template('json_editor.html')
 
@@ -262,7 +264,7 @@ def select_json():
             # 返回jsonpath_ng搜索到的结果
             result = find_json_value(json_input, json_path)
 
-            return json.dumps(result,indent=2 ,ensure_ascii=False)
+            return json.dumps(result, indent=2, ensure_ascii=False)
         except json.JSONDecodeError:
             return 'JSON格式错误' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     else:
@@ -283,7 +285,7 @@ def replace_json():
             # 返回jsonpath_ng搜索到的结果
             result = replace_json_elements(json_dict, json_path, replace_value)
 
-            return json.dumps(result,indent=2 ,ensure_ascii=False)
+            return json.dumps(result, indent=2, ensure_ascii=False)
         except json.JSONDecodeError:
             return 'JSON格式错误' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     else:
@@ -317,6 +319,33 @@ def xmind2case(download_xml=None):
         return redirect(url_for('preview_file', filename=g.filename))
     else:
         return render_template('xmind2case.html', records=list(get_records()))
+
+
+@app.route('/transale_xmind', methods=['POST'])
+def transale_xmind():
+    file = request.files['file']
+    filename = request.files['file'].filename
+
+    if file and filename.endswith('.xmind'):
+        # 处理文件
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        file_base_name = filename[:0 - len('.xmind')]
+        input_file_path = join(app.config['UPLOAD_FOLDER'], filename)
+        out_put_file = f'{file_base_name}_Tra.xmind'
+
+        # 开始处理
+        translation_xmind(input_file_path, os.path.join(app.config['UPLOAD_FOLDER'], out_put_file))
+
+        # 创建响应
+        response = send_from_directory(app.config['UPLOAD_FOLDER'], out_put_file, as_attachment=True,
+                                       mimetype="application/octet-stream")
+
+        response.headers["X-Download-Filename"] = quote(out_put_file.encode('utf-8'))
+        # response.headers["Content-Type"] = 'multipart/form-data'
+        return response
+
+    else:
+        g.error = "不支持该文件类型: {}".format(','.join(g.invalid_files))
 
 
 @app.route('/uploads/<filename>')
@@ -387,7 +416,7 @@ def delete_file(filename, record_id):
         abort(404)
     else:
         delete_record(filename, record_id)
-    return redirect('/')
+    return redirect('/xmind2case')
 
 
 @app.errorhandler(Exception)

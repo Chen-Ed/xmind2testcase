@@ -1,0 +1,7 @@
+Flask==2.2.5
+jsonpath_ng==1.6.1
+loguru==0.7.2
+OpenCC==1.1.7
+pyperclip==1.8.2
+setuptools==69.5.1
+XMind==1.2.0
