@@ -68,7 +68,7 @@ def company_id(page, auth_token, base_url) -> list:
 
     response = requests.request("POST", url, headers=headers, data=payload).json()
     assert response['code'] == 200
-    return [[i['guid']] for i in response['data']['list']]
+    return [i['guid'] for i in response['data']['list']]
 
 
 @retry(tries=3, delay=5, backoff=1.5)
@@ -107,53 +107,53 @@ def project_id(page, auth_token, base_url) -> list:
     response = requests.request("POST", url, headers=headers, data=payload).json()
 
     assert response['code'] == 200
-    return [[i['guid']] for i in response['data']['list']]
+    return [i['guid'] for i in response['data']['list']]
 
 
-# @retry(tries=3, delay=5, backoff=1.5)
-# def staff_id(page, auth_token, base_url) -> list:
-#     """用户id
-#
-#     Args:
-#         page (_type_): _description_
-#         auth_token (_type_): _description_
-#
-#     Returns:
-#         list: _description_
-#     """
-#     url = f"{base_url}/portal/user/get-user-list"
-#
-#     payload = json.dumps({
-#         "page": page,
-#         "page_size": 200,
-#         "name": "",
-#         "is_show": 1,
-#         "status": "*"
-#     })
-#     headers = {
-#         'Accept': 'application/json, text/plain, */*',
-#         'Accept-Language': 'zh-CN,zh',
-#         'Cache-Control': 'no-cache',
-#         'Connection': 'keep-alive',
-#         'Origin': 'https://1p-portal-testk11-uat.nwplatform.com.cn',
-#         'Pragma': 'no-cache',
-#         'Referer': 'https://1p-portal-testk11-uat.nwplatform.com.cn/setting/staffStructure',
-#         'Sec-Fetch-Dest': 'empty',
-#         'Sec-Fetch-Mode': 'cors',
-#         'Sec-Fetch-Site': 'same-origin',
-#         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
-#         'auth-token': auth_token,
-#         'lang': 'zh',
-#         'sec-ch-ua': '"Google Chrome";v="125", "Chromium";v="125", "Not.A/Brand";v="24"',
-#         'sec-ch-ua-mobile': '?0',
-#         'sec-ch-ua-platform': '"Windows"',
-#         'Content-Type': 'application/json'
-#     }
-#
-#     response = requests.request("POST", url, headers=headers, data=payload).json()
-#
-#     assert response['code'] == 200
-#     return [i['guid'] for i in response['data']['list']]
+@retry(tries=3, delay=5, backoff=1.5)
+def staff_id(page, auth_token, base_url) -> list:
+    """用户id
+
+    Args:
+        page (_type_): _description_
+        auth_token (_type_): _description_
+
+    Returns:
+        list: _description_
+    """
+    url = f"{base_url}/portal/user/get-user-list"
+
+    payload = json.dumps({
+        "page": page,
+        "page_size": 200,
+        "name": "",
+        "is_show": 1,
+        "status": "*"
+    })
+    headers = {
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Language': 'zh-CN,zh',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+        'Origin': 'https://1p-portal-testk11-uat.nwplatform.com.cn',
+        'Pragma': 'no-cache',
+        'Referer': 'https://1p-portal-testk11-uat.nwplatform.com.cn/setting/staffStructure',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-origin',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+        'auth-token': auth_token,
+        'lang': 'zh',
+        'sec-ch-ua': '"Google Chrome";v="125", "Chromium";v="125", "Not.A/Brand";v="24"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload).json()
+
+    assert response['code'] == 200
+    return [i['guid'] for i in response['data']['list']]
 
 
 @retry(tries=3, delay=5, backoff=1.5)
@@ -198,7 +198,7 @@ def role_id(page, auth_token, base_url) -> list:
     response = requests.request("POST", url, headers=headers, data=payload).json()
 
     assert response['code'] == 200
-    return [[i['guid']] for i in response['data']['list']]
+    return [i['guid'] for i in response['data']['list']]
 
 
 @retry(tries=3, delay=5, backoff=1.5)
@@ -243,12 +243,12 @@ def app_id(page, auth_token, base_url) -> list:
         response = requests.request("POST", url, headers=headers, data=payload).json()
 
         assert response['code'] == 200
-        return [[i['guid']] for i in response['data']['list']]
+        return [i['guid'] for i in response['data']['list']]
     else:
         return []
 
 
-# @retry(tries=3, delay=5, backoff=1.5)
+@retry(tries=3, delay=5, backoff=1.5)
 def department_id(auth_token, base_url, colleter, parent_id) -> list:
     """递归收集部门id
 
@@ -266,24 +266,12 @@ def department_id(auth_token, base_url, colleter, parent_id) -> list:
             "page_size": 200,
             "name": "",
             "is_show": 1,
-            "data_source": [
-                "PORTAL",
-                "SAP",
-                "LMS",
-                "AAS"
-            ],
             "parent_id": 0
         }
     else:
         payload = {
             "page": 1,
             "is_show": 1,
-            "data_source": [
-                "PORTAL",
-                "SAP",
-                "LMS",
-                "AAS"
-            ],
             "parent_id": parent_id
         }
     headers = {
@@ -328,21 +316,13 @@ def usr_info(page, auth_token, base_url) -> list:
     """
     url = f"{base_url}/portal/user/get-user-list"
 
-    payload = json.dumps(
-        {
-            "page": page,
-            "page_size": 200,
-            "name": "",
-            "is_show": 1,
-            "status": "*",
-            "data_source": [
-                "PORTAL",
-                "SAP",
-                "LMS",
-                "AAS"
-            ]
-        }
-    )
+    payload = json.dumps({
+        "page": page,
+        "page_size": 200,
+        "name": "",
+        "is_show": 1,
+        "status": "*"
+    })
     headers = {
         'Accept': 'application/json, text/plain, */*',
         'Accept-Language': 'zh-CN,zh',
@@ -367,53 +347,51 @@ def usr_info(page, auth_token, base_url) -> list:
 
     assert response['code'] == 200
     res = [[i['guid'], i['email'], i['phone'], i['status'], i.get('system_status'), i.get('resign_state'), i['name'],
-            i['en_name'], i['chinese_name'],i['department_guid']] for i in response['data']['list']]
+            i['en_name'], i['chinese_name']] for i in response['data']['list']]
     if page == 1:
         res.insert(0, ['guid', 'email', 'phone', 'status', 'system_status', 'resign_state', 'name', 'en_name',
-                       'chinese_name','department_guid'])
+                       'chinese_name'])
     return res
 
-# 获取公司、角色、应用、项目ID
-# 获取用户数据
-# if __name__ == '__main__':
-#     # base_url = 'https://k11.xigmapas.com/portal-pro'
+
+if __name__ == '__main__':
+    base_url = 'https://k11.xigmapas.com/portal-pro'
+    # base_url = 'https://1p-portal-k11-uat.nwplatform.com.cn/portal-uat'
+    # base_url = 'https://1p-portal-testk11-uat.nwplatform.com.cn/portal-uat'
+    auth_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJKWSBZYW5nIEppYW4gWWUiLCJidV9ndWlkIjoiOTk1ZjlkNWI1YTkxMTFlZDg0NTAwMDE2M2UxNzU0YWUiLCJ1c2VyX3R5cGUiOiJzdGFmZiIsInVzZXJfZ3VpZCI6IjM0MzJjN2Y0NWQ3MDQ5YmVhMzY4MzMxMWUzN2FjZmZkIiwianRpIjoiZTNhYmVmYTcyNGFiNGUxYzg3OWI3NjZmNTAzYmEzMjEiLCJzdGFmZl9ndWlkIjoiMzQzMmM3ZjQ1ZDcwNDliZWEzNjgzMzExZTM3YWNmZmQifQ.wZjQkgzFv4cQ96s1LIO-XKVCGk0nk0h0bXqRE3MwYSc'
+    # for f in [company_id,project_id,staff_id,role_id,app_id]:
+    for f in [usr_info]:
+        ids = dataIter(auth_token, usr_info, base_url)
+        dataStore = []
+        try:
+            for i in ids:
+                dataStore.extend(i)
+                print(f"共收集用户数据{len(dataStore)}条")
+        except:
+            print(f'获取数据失败！')
+            pass
+        finally:
+            fileName = str(f.__name__) + datetime.now().strftime('%Y%m%d_%H%M%S') + '.csv'
+            csv_file = os.path.join(r'C:/Users/te_chenyingdong/Desktop', fileName)
+            with open(csv_file, mode='w+', newline='', encoding='utf8') as file:
+                writer = csv.writer(file)
+                writer.writerow([f.__name__])
+                for i in dataStore:
+                    writer.writerow(i)
+
+# if __name__=='__main__':
 #     base_url = 'https://1p-portal-k11-uat.nwplatform.com.cn/portal-uat'
 #     # base_url = 'https://1p-portal-testk11-uat.nwplatform.com.cn/portal-uat'
-#     auth_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsdWNhc19BIiwiYnVfZ3VpZCI6Ijk5NWY5ZDViNWE5MTExZWQ4NDUwMDAxNjNlMTc1NGFlIiwidXNlcl90eXBlIjoic3RhZmYiLCJ1c2VyX2d1aWQiOiJlNzVlMzNmNDQxOTc0ZWY5OTVhNzQzNTgxNmI2ZGNlOCIsImp0aSI6IjRkOTY2MGZlNTU3ZTRmYmE5YmRkYjUzNWMwYTFkMTg3In0.W_BSbbbSiNcdtP5wUpT9dYyIyKBELW7ngA9frARIzdg'
-#     # for f in [company_id,project_id,staff_id,role_id,app_id,usr_info]:
-#     for f in [usr_info]:
-#         ids = dataIter(auth_token, usr_info, base_url)
-#         dataStore = []
-#         try:
-#             for i in ids:
-#                 dataStore.extend(i)
-#                 print(f"共收集用户数据{len(dataStore)}条")
-#         except:
-#             print(f'获取数据失败！')
-#             pass
-#         finally:
-#             fileName = str(f.__name__) + datetime.now().strftime('%Y%m%d_%H%M%S') + '.csv'
-#             csv_file = os.path.join(r'C:/Users/te_chenyingdong/Desktop', fileName)
-#             with open(csv_file, mode='w+', newline='', encoding='utf8') as file:
-#                 writer = csv.writer(file)
-#                 writer.writerow([f.__name__])
-#                 for i in dataStore:
-#                     writer.writerow(i)
-
-# 获取部门ID
-if __name__=='__main__':
-    base_url = 'https://1p-portal-k11-uat.nwplatform.com.cn/portal-uat'
-    # base_url = 'https://1p-portal-testk11-uat.nwplatform.com.cn/portal-uat'
-    auth_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsdWNhc19BIiwiYnVfZ3VpZCI6Ijk5NWY5ZDViNWE5MTExZWQ4NDUwMDAxNjNlMTc1NGFlIiwidXNlcl90eXBlIjoic3RhZmYiLCJ1c2VyX2d1aWQiOiJlNzVlMzNmNDQxOTc0ZWY5OTVhNzQzNTgxNmI2ZGNlOCIsImp0aSI6IjRkOTY2MGZlNTU3ZTRmYmE5YmRkYjUzNWMwYTFkMTg3In0.W_BSbbbSiNcdtP5wUpT9dYyIyKBELW7ngA9frARIzdg'
-    dataStore = set()
-    # for i in ['5f459906889b47dba5a9eb8e4c0238fb','2f4dfea40a4946baadef452fec0ee7e6']:
-    #     department_id(auth_token=auth_token,base_url=base_url,colleter=dataStore,parent_id=i)
-    department_id(auth_token=auth_token,base_url=base_url,colleter=dataStore,parent_id='2f4dfea40a4946baadef452fec0ee7e6')
-    print(len(dataStore))
-    fileName =str(department_id.__name__)+datetime.now().strftime('%Y%m%d_%H%M%S')+'.csv'
-    csv_file = os.path.join(r'C:/Users/te_chenyingdong/Desktop',fileName)
-    with open(csv_file, mode='w+', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow([department_id.__name__])
-        for i in dataStore:
-            writer.writerow([i])
+#     auth_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsdWNhc19BIiwiYnVfZ3VpZCI6Ijk5NWY5ZDViNWE5MTExZWQ4NDUwMDAxNjNlMTc1NGFlIiwidXNlcl90eXBlIjoic3RhZmYiLCJ1c2VyX2d1aWQiOiJlNzVlMzNmNDQxOTc0ZWY5OTVhNzQzNTgxNmI2ZGNlOCIsImp0aSI6ImUxZjZmZWM5MTRmZTQ0MTBiNThhMDY1NDI3NjdhNDI1Iiwic3RhZmZfZ3VpZCI6ImU3NWUzM2Y0NDE5NzRlZjk5NWE3NDM1ODE2YjZkY2U4In0.fas5wyxomR9JTAZDgLFfWQtfcKY2jTL7hXTKh43wgzc'
+#     dataStore = set()
+#     # for i in ['5f459906889b47dba5a9eb8e4c0238fb','2f4dfea40a4946baadef452fec0ee7e6']:
+#     #     department_id(auth_token=auth_token,base_url=base_url,colleter=dataStore,parent_id=i)
+#     department_id(auth_token=auth_token,base_url=base_url,colleter=dataStore,parent_id='2f4dfea40a4946baadef452fec0ee7e6')
+#     print(len(dataStore))
+#     fileName =str(department_id.__name__)+datetime.now().strftime('%Y%m%d_%H%M%S')+'.csv'
+#     csv_file = os.path.join(r'C:/Users/te_chenyingdong/Desktop',fileName)
+#     with open(csv_file, mode='w+', newline='') as file:
+#         writer = csv.writer(file)
+#         writer.writerow([department_id.__name__])
+#         for i in dataStore:
+#             writer.writerow([i])

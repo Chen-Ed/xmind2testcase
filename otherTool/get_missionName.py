@@ -24,11 +24,13 @@ def get_XmindMission(Model, needs: list):
 
 
 if __name__ == '__main__':
-    needs = """IN08	应用展示增加关闭显示选项
-IN0H	项目配置增加非营业时间和假期日历信息
-INIQ	处理A.Connect中WS切换XigmaCloud接口问题
-INJ9	处理A.Connect 引用 WS页面替换
-INJH	XC-UAT登录，增加lease开发人员接收验证码邮件白名单
+    needs = """IJW8	IP安全围栏
+IMND	部门组织架构过滤PMS来源的层级树
+IMNF	PORTAL显示的人员状态字段调整
+IMVB	补充旧有应用入口和权限至XigmaCloud应用中心
+IMWJ	增加BU标识，方便用户知晓当前登录的BU
+IMYA	E-LEASING入口应用补充至XC
+
 """.strip().replace('	', ' ').split('\n')
-    get_GiteeMission('XC-Portal 2.3', needs)
-    get_XmindMission('Portal/2.3.0/', needs)
+    get_GiteeMission('XC-Portal 2.2.1', needs)
+    get_XmindMission('Portal/2.2.1/', needs)
