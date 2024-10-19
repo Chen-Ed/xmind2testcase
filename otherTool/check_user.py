@@ -2,19 +2,21 @@
 import csv
 
 import requests
-import json
 from faker import Faker
 from datetime import datetime
 from loguru import logger
-from common import check_status_code
+from common.comm import check_status_code
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
+
+from otherTool.save_Ids import usr_info, dataIter
 
 # 创建实例
 faker = Faker(locale='zh_CN')
 
 # 临时变量
 today = datetime.date(datetime.now()).strftime('%Y%m%d')[2:]
-caseName = 'test_%s_%d' % (today, faker.random_int(min=1000, max=9999))
+caseName = '%s_%s_%d' % (Path(__file__).name, today, faker.random_int(min=1000, max=9999))
 parent_department_id = None
 user_id = None
 role_id = None
@@ -28,6 +30,25 @@ department_id = None
 position_id = None
 # 设置日志模块
 logger.add(f'{caseName}_py.log', format="{time} {level} {message}", level="DEBUG")
+
+
+def save_usr_id(baseUrl, token, dirPath):
+    ids = dataIter(auth_token=token, requestFUNC=usr_info, base_url=baseUrl)
+    dataStore = []
+    try:
+        for i in ids:
+            dataStore.extend(i)
+            print(f"共收集用户数据{len(dataStore)}条")
+    except Exception as e:
+        print(f'获取数据失败！')
+        logger.error(e)
+    assert len(dataStore) > 0, '未获取到用户数据'
+    csv_file = Path(dirPath) / f"{str(usr_info.__name__)}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+    with open(csv_file, mode='w+', newline='', encoding='utf8') as file:
+        writer = csv.writer(file)
+        writer.writerow([usr_info.__name__])
+        for i in dataStore:
+            writer.writerow(i)
 
 
 def replay(baseUrl, token, staff_id):
@@ -83,11 +104,11 @@ def replay(baseUrl, token, staff_id):
     # request_6结果： {"data":{"expiration_time":"2024-08-21 13:13:18"},"code":200,"msg":"success.","trace_id":null}
 
 
-def process_user(user_id, error_list):
+def process_user(user_id, error_list, baseUrl, token):
     try:
         replay(
-            baseUrl='https://1p-portal-k11-uat.nwplatform.com.cn/portal-uat',
-            token='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsdWNhc19BIiwiYnVfZ3VpZCI6Ijk5NWY5ZDViNWE5MTExZWQ4NDUwMDAxNjNlMTc1NGFlIiwidXNlcl90eXBlIjoic3RhZmYiLCJ1c2VyX2d1aWQiOiJlNzVlMzNmNDQxOTc0ZWY5OTVhNzQzNTgxNmI2ZGNlOCIsImp0aSI6IjRkOTY2MGZlNTU3ZTRmYmE5YmRkYjUzNWMwYTFkMTg3In0.W_BSbbbSiNcdtP5wUpT9dYyIyKBELW7ngA9frARIzdg',
+            baseUrl=baseUrl,
+            token=token,
             staff_id=user_id
         )
         return True
@@ -98,9 +119,27 @@ def process_user(user_id, error_list):
 
 
 if __name__ == '__main__':
+    # base_url = 'https://k11.xigmapas.com/portal-pro'
+    base_url = 'https://1p-portal-k11-uat.nwplatform.com.cn/portal-uat'
+    # base_url = 'https://1p-portal-testk11-uat.nwplatform.com.cn/portal-uat'
+    auth_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJMdWNhcyBDaGVuIFlpbmcgRG9uZyAoTldDUykiLCJidV9ndWlkIjoiOTk1ZjlkNWI1YTkxMTFlZDg0NTAwMDE2M2UxNzU0YWUiLCJ1c2VyX3R5cGUiOiJzdGFmZiIsInVzZXJfZ3VpZCI6ImZkMzhiZjRmNDRhNDQwMzRhNjRlZDkzOTMwYThhZTdlIiwianRpIjoiNGM1YTUzYjIxODdlNGI4MzhmYjg0ZTg1YzlhZDc4MDQifQ.kChFwjv5KtqrLQSoX8YtmDVEeor9vGr3iU0sBvJ-4o0'
+
     error = []
     passUser = 0
-    with open(r'C:\Users\te_chenyingdong\Desktop\usr_info20240821_101614.csv', 'r', encoding='utf-8') as csvfile:
+    max_workers = 10
+
+    dirPath = Path.home() / 'Desktop' / datetime.date(datetime.now()).strftime("%Y年%m月%d日")
+    dirPath.mkdir(exist_ok=True)
+
+    if cache := False:
+        logger.info('清理所有数据后重新爬取数据')
+        for f in dirPath.glob(f'{str(usr_info.__name__)}*.csv'):
+            f.unlink()
+        save_usr_id(baseUrl=base_url, token=auth_token, dirPath=dirPath)
+
+    csv_file = [i for i in dirPath.glob(f'{str(usr_info.__name__)}*.csv')][0]
+
+    with open(csv_file, 'r', encoding='utf-8') as csvfile:
         # 创建 csv.reader 对象
         reader = csv.reader(csvfile)
         # 忽略第一行
@@ -113,8 +152,9 @@ if __name__ == '__main__':
         total = len(user_ids)
 
         # 使用线程池处理用户
-        with ThreadPoolExecutor(max_workers=5) as executor:
-            futures = {executor.submit(process_user, user_id, error): user_id for user_id in user_ids}
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = {executor.submit(process_user, user_id, error, base_url, auth_token): user_id for user_id in
+                       user_ids}
             for future in as_completed(futures):
                 user_id = futures[future]
                 result = future.result()

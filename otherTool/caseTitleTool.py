@@ -23,7 +23,7 @@ def get_result(combination, res_rules):
     return default_result
 
 
-def get_sorted_combinations(lists: list[list], orderList=None, res_rules=None):
+def get_sorted_combinations(lists: list[list], orderList=None, res_rules=None)->list[{'item': list, 'res': str}]:
     """生成元素的组合结果，并按指定列表排序
 
     Args:
@@ -36,9 +36,8 @@ def get_sorted_combinations(lists: list[list], orderList=None, res_rules=None):
     if orderList is None:
         orderList = lists[0]
     combinations = list(itertools.product(*lists))
+    combinations.sort(key=lambda x: [orderList.index(i) for i in x if i in orderList])
 
-    if orderList is not None:
-        combinations.sort(key=lambda x: [orderList.index(i) for i in x if i in orderList])
 
     # result_str = '\n'.join([''.join(i) for i in combinations])
     # result_str = '\n'.join([strTemplates.format(i) for i in combinations])
@@ -47,8 +46,13 @@ def get_sorted_combinations(lists: list[list], orderList=None, res_rules=None):
     # pyperclip.copy(result_str)
     # print('已复制到剪贴板！')
     new_combinations = []
-    for combination in combinations:
-        new_combinations.append({'item': list(combination), 'res': get_result(combination, res_rules)})
+
+    if res_rules is None:
+        for combination in combinations:
+            new_combinations.append({'item': list(combination), 'res': None})
+    else:
+        for combination in combinations:
+            new_combinations.append({'item': list(combination), 'res': get_result(combination, res_rules)})
     return new_combinations
 
 
@@ -72,7 +76,10 @@ def insertStr(templeStr: str, combinations: list):
             index = int(match[1])
             if index < len(my_list):
                 input_string = input_string.replace(match, f'【{my_list[index]}】', 1)
-                input_string = input_string.replace('[res]', combination.get('res'))
+                try:
+                    input_string = input_string.replace('[res]', combination.get('res'))
+                except:
+                    pass
         # 替换完毕后收集起来
         resultList.append(input_string)
 
@@ -147,6 +154,22 @@ if __name__ == '__main__':
 		成功
 	【ip围栏内】使用[2][3]登录portal
 		[res]"""
-    inputList = [ip围栏状态1, ip围栏开启范围, 登录类型1, 登录类型2]
-    combinations = get_sorted_combinations(lists=inputList, orderList=ip围栏状态1, res_rules=res_rules)
+
+    # workflow 1.8.2
+    组件类型 = "开始事件，结束事件，定时边界事件，排他网关，接收任务，用户任务，包容网关，并行网关".split('，')
+    # res_rules = {
+    #     "rules": {
+    #         '关闭围栏,[^,]+,[^,]+,[^,]+': '登录成功，不需要输入邮箱/手机验证码',
+    #         '开启围栏,[^,]+,[^,]+,[^,]+': '登录成功，不需要输入邮箱/手机验证码',
+    #         '开启围栏,勾选pc端,企业,手机': '登录成功，不需要输入邮箱/手机验证码',
+    #         '开启围栏,取消勾选pc端,[^,]+,[^,]+': '登录成功，不需要输入邮箱/手机验证码',
+    #         '开启围栏,勾选pc端,[^,]+,[^,]+': '登录成功，页面需要输入邮箱/手机验证码',
+    #         # '勾选pc端,[^,]+,[^,]+': '登录成功，页面需要输入邮箱/手机验证码'
+    #     },
+    #     "default_result": "*****************"
+    # }
+    超时事件属性="停留节点，自动审批，发送邮件".split('，')
+    templeStr = """[0]+[1]"""
+    inputList = [超时事件属性,超时事件属性]
+    combinations = get_sorted_combinations(lists=inputList, orderList=超时事件属性)
     insertStr(templeStr, combinations)

@@ -8,7 +8,7 @@ from setuptools import setup, find_packages, Command
 
 about = {}
 here = os.path.abspath(os.path.dirname(__file__))
-with io.open(os.path.join(here, 'xmind2testcase', '__about__.py'), encoding='utf-8') as f:  # custom
+with io.open(os.path.join(here, 'xmind2case', '__about__.py'), encoding='utf-8') as f:  # custom
     exec(f.read(), about)
 
 with io.open('README.md', encoding='utf-8') as f:
@@ -58,7 +58,7 @@ class PyPiCommand(Command):
             self.status('Removing current build artifacts...')
             rmtree(os.path.join(here, 'dist'))
             rmtree(os.path.join(here, 'build'))
-            rmtree(os.path.join(here, 'xmind2testcase.egg-info'))  # custom
+            rmtree(os.path.join(here, 'xmind2case.egg-info'))  # custom
         except OSError:
             pass
 
@@ -92,7 +92,7 @@ setup(
     ],
     entry_points={  # custom
         'console_scripts': [
-            'xmind2testcase=xmind2testcase.cli:cli_main',
+            'xmind2case=xmind2case.cli:cli_main',
         ]
     },
     cmdclass={

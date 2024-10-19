@@ -45,6 +45,15 @@
                     </form>
                 </div>
 
+                <div class="tool-item">
+                    <h3>csv 转 xlsx</h3>
+                    <form action="{{ url_for('csv_2_xlsx') }}" method="POST" enctype="multipart/form-data">
+                        <div id="drop-zone3" style="width: 300px; height: 200px; border: 2px dashed #ccc; text-align: center; line-height: 200px;">
+                            将文件拖到此处
+                        </div>
+                    </form>
+                </div>
+
             </div>
         </div>
     </div>

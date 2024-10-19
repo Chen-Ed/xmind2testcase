@@ -20,7 +20,7 @@ class dataIter():
         return self
 
     def __next__(self):
-        print(f'正在采集{f.__name__}第{self.page}页')
+        print(f'正在采集{self.requestFUNC.__name__}第{self.page}页')
         dataStore = self.requestFUNC(self.page, self.auth_token, self.base_url)
         sleep(self.delay)
 
@@ -348,9 +348,9 @@ def usr_info(page, auth_token, base_url) -> list:
         'Accept-Language': 'zh-CN,zh',
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive',
-        'Origin': 'https://1p-portal-testk11-uat.nwplatform.com.cn',
+        # 'Origin': 'https://1p-portal-testk11-uat.nwplatform.com.cn',
         'Pragma': 'no-cache',
-        'Referer': 'https://1p-portal-testk11-uat.nwplatform.com.cn/setting/staffStructure',
+        # 'Referer': 'https://1p-portal-testk11-uat.nwplatform.com.cn/setting/staffStructure',
         'Sec-Fetch-Dest': 'empty',
         'Sec-Fetch-Mode': 'cors',
         'Sec-Fetch-Site': 'same-origin',
@@ -365,55 +365,56 @@ def usr_info(page, auth_token, base_url) -> list:
 
     response = requests.request("POST", url, headers=headers, data=payload).json()
 
-    assert response['code'] == 200
+    assert response['code'] == 200 , f'response.code!=200 请求失败！\n response={response}'
     res = [[i['guid'], i['email'], i['phone'], i['status'], i.get('system_status'), i.get('resign_state'), i['name'],
-            i['en_name'], i['chinese_name'],i['department_guid']] for i in response['data']['list']]
+            i['en_name'], i['chinese_name'], i['department_guid']] for i in response['data']['list']]
     if page == 1:
         res.insert(0, ['guid', 'email', 'phone', 'status', 'system_status', 'resign_state', 'name', 'en_name',
-                       'chinese_name','department_guid'])
+                       'chinese_name', 'department_guid'])
     return res
 
-# 获取公司、角色、应用、项目ID
-# 获取用户数据
-# if __name__ == '__main__':
-#     # base_url = 'https://k11.xigmapas.com/portal-pro'
-#     base_url = 'https://1p-portal-k11-uat.nwplatform.com.cn/portal-uat'
-#     # base_url = 'https://1p-portal-testk11-uat.nwplatform.com.cn/portal-uat'
-#     auth_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsdWNhc19BIiwiYnVfZ3VpZCI6Ijk5NWY5ZDViNWE5MTExZWQ4NDUwMDAxNjNlMTc1NGFlIiwidXNlcl90eXBlIjoic3RhZmYiLCJ1c2VyX2d1aWQiOiJlNzVlMzNmNDQxOTc0ZWY5OTVhNzQzNTgxNmI2ZGNlOCIsImp0aSI6IjRkOTY2MGZlNTU3ZTRmYmE5YmRkYjUzNWMwYTFkMTg3In0.W_BSbbbSiNcdtP5wUpT9dYyIyKBELW7ngA9frARIzdg'
-#     # for f in [company_id,project_id,staff_id,role_id,app_id,usr_info]:
-#     for f in [usr_info]:
-#         ids = dataIter(auth_token, usr_info, base_url)
-#         dataStore = []
-#         try:
-#             for i in ids:
-#                 dataStore.extend(i)
-#                 print(f"共收集用户数据{len(dataStore)}条")
-#         except:
-#             print(f'获取数据失败！')
-#             pass
-#         finally:
-#             fileName = str(f.__name__) + datetime.now().strftime('%Y%m%d_%H%M%S') + '.csv'
-#             csv_file = os.path.join(r'C:/Users/te_chenyingdong/Desktop', fileName)
-#             with open(csv_file, mode='w+', newline='', encoding='utf8') as file:
-#                 writer = csv.writer(file)
-#                 writer.writerow([f.__name__])
-#                 for i in dataStore:
-#                     writer.writerow(i)
 
-# 获取部门ID
-if __name__=='__main__':
+# 获取公司、角色、应用、项目ID、用户数据
+if __name__ == '__main__':
+    # base_url = 'https://k11.xigmapas.com/portal-pro'
     base_url = 'https://1p-portal-k11-uat.nwplatform.com.cn/portal-uat'
     # base_url = 'https://1p-portal-testk11-uat.nwplatform.com.cn/portal-uat'
-    auth_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsdWNhc19BIiwiYnVfZ3VpZCI6Ijk5NWY5ZDViNWE5MTExZWQ4NDUwMDAxNjNlMTc1NGFlIiwidXNlcl90eXBlIjoic3RhZmYiLCJ1c2VyX2d1aWQiOiJlNzVlMzNmNDQxOTc0ZWY5OTVhNzQzNTgxNmI2ZGNlOCIsImp0aSI6IjRkOTY2MGZlNTU3ZTRmYmE5YmRkYjUzNWMwYTFkMTg3In0.W_BSbbbSiNcdtP5wUpT9dYyIyKBELW7ngA9frARIzdg'
-    dataStore = set()
-    # for i in ['5f459906889b47dba5a9eb8e4c0238fb','2f4dfea40a4946baadef452fec0ee7e6']:
-    #     department_id(auth_token=auth_token,base_url=base_url,colleter=dataStore,parent_id=i)
-    department_id(auth_token=auth_token,base_url=base_url,colleter=dataStore,parent_id='2f4dfea40a4946baadef452fec0ee7e6')
-    print(len(dataStore))
-    fileName =str(department_id.__name__)+datetime.now().strftime('%Y%m%d_%H%M%S')+'.csv'
-    csv_file = os.path.join(r'C:/Users/te_chenyingdong/Desktop',fileName)
-    with open(csv_file, mode='w+', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow([department_id.__name__])
-        for i in dataStore:
-            writer.writerow([i])
+    auth_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsdWNhc19BIiwiYnVfZ3VpZCI6Ijk5NWY5ZDViNWE5MTExZWQ4NDUwMDAxNjNlMTc1NGFlIiwidXNlcl90eXBlIjoic3RhZmYiLCJ1c2VyX2d1aWQiOiJlNzVlMzNmNDQxOTc0ZWY5OTVhNzQzNTgxNmI2ZGNlOCIsImp0aSI6IjEyYjVhNzMzNGRkYzQ0YzJiYmZmZmE0NTdkZGQyMjkxIn0.uL61COH1u4_PHaLargrA3DsvuIwXSXJY6FL7Bb5L4Fo'
+
+    dirName = datetime.date(datetime.now()).strftime("%Y年%m月%d日")
+    dirPath = os.path.join(f'C:/Users/te_chenyingdong/Desktop', dirName)
+    if os.path.exists(dirPath) is False:
+        os.mkdir(dirPath)
+    for f in [company_id,project_id,role_id,app_id]:
+    # for f in [usr_info]:
+        ids = dataIter(auth_token, usr_info, base_url)
+        dataStore = []
+        try:
+            for i in ids:
+                dataStore.extend(i)
+                print(f"共收集用户数据{len(dataStore)}条")
+        except:
+            print(f'获取数据失败！')
+            pass
+        finally:
+            fileName = str(f.__name__) + datetime.now().strftime('%Y%m%d_%H%M%S') + '.csv'
+            csv_file = os.path.join(dirPath, fileName)
+            with open(csv_file, mode='w+', newline='', encoding='utf8') as file:
+                writer = csv.writer(file)
+                writer.writerow([f.__name__])
+                for i in dataStore:
+                    writer.writerow(i)
+
+    # 获取部门ID
+    # dataStore = set()
+    # # for i in ['5f459906889b47dba5a9eb8e4c0238fb','2f4dfea40a4946baadef452fec0ee7e6']:
+    # #     department_id(auth_token=auth_token,base_url=base_url,colleter=dataStore,parent_id=i)
+    # department_id(auth_token=auth_token, base_url=base_url, colleter=dataStore, parent_id=0)
+    # print(len(dataStore))
+    # fileName = str(department_id.__name__) + datetime.now().strftime('%Y%m%d_%H%M%S') + '.csv'
+    # csv_file = os.path.join(dirPath, fileName)
+    # with open(csv_file, mode='w+', newline='') as file:
+    #     writer = csv.writer(file)
+    #     writer.writerow([department_id.__name__])
+    #     for i in dataStore:
+    #         writer.writerow([i])

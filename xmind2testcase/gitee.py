@@ -19,6 +19,7 @@ def xmind_to_gitee_csv_file(xmind_file):
     # fileheader = ["所属模块", "用例标题", "前置条件", "步骤", "预期", "关键词", "优先级", "用例类型", "适用阶段"]
     fileheader = ["序号","功能模块*", "用例名称*", "维护人", "用例类型", "优先级", "前置条件", "备注", "步骤描述", "预期结果"]
 
+
     gitee_testcase_rows = [fileheader]
     for testcase in testcases:
         row = gen_a_testcase_row(testcase)

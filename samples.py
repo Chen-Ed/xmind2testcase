@@ -1,15 +1,7 @@
 #!/usr/bin/env python
 # _*_ coding:utf-8 _*_
-import json
-import xmind
 import logging
-from xmind2testcase.zentao import xmind_to_zentao_csv_file
-from xmind2testcase.gitee import xmind_to_gitee_csv_file
-from xmind2testcase.testlink import xmind_to_testlink_xml_file
-from xmind2testcase.utils import xmind_testcase_to_json_file
-from xmind2testcase.utils import xmind_testsuite_to_json_file
-from xmind2testcase.utils import get_xmind_testcase_list
-from xmind2testcase.utils import get_xmind_testsuite_list
+from webtool.xmind2case import xmind_to_gitee_csv_file
 
 logging.basicConfig(level=logging.INFO)
 

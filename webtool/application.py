@@ -1,32 +1,32 @@
 #!/usr/bin/env python
-# _*_ coding:utf-8 _*_
+# -*- coding:utf-8 -*-
 import datetime
-import json
-import sys
-import time
-
-sys.path.append("..")
-import logging
+from pathlib import Path
 import os
+from os.path import join, exists
+import logging
 import re
 import arrow
 import sqlite3
+import json
 from contextlib import closing
-from os.path import join, exists
-from werkzeug.utils import secure_filename
-from xmind2testcase.zentao import xmind_to_zentao_csv_file
-from xmind2testcase.gitee import xmind_to_gitee_csv_file
-from xmind2testcase.testlink import xmind_to_testlink_xml_file
-from xmind2testcase.utils import get_xmind_testsuites, get_xmind_testcase_list
 from flask import Flask, request, send_from_directory, g, render_template, abort, redirect, url_for
 from urllib.parse import quote
-from mytool.har2xmind import *
-from mytool.swagger2xmind import *
-from mytool.json_tools import *
-from mytool.translate_xmind import translation_xmind
+from werkzeug.utils import secure_filename
 
-here = os.path.abspath(os.path.dirname(__file__))
-log_file = os.path.join(here, 'running.log')
+from webtool.xmind2case.zentao import xmind_to_zentao_csv_file
+from webtool.xmind2case import xmind_to_gitee_csv_file
+from webtool.xmind2case.testlink import xmind_to_testlink_xml_file
+from webtool.xmind2case import get_xmind_testsuites, get_xmind_testcase_list
+from common.comm import csv_2_excel
+from common.json_tools import find_json_value, replace_json_elements
+from otherTool.myTools.translate_xmind import translation_xmind
+from otherTool.myTools.har2xmind import convert_har_to_xmind
+from otherTool.myTools.swagger2xmind import convert_swagger_to_xmind
+
+here = Path(__file__).parent
+log_file = here / 'running.log'
+
 # log handler
 formatter = logging.Formatter('%(asctime)s  %(name)s  %(levelname)s  [%(module)s - %(funcName)s]: %(message)s')
 file_handler = logging.FileHandler(log_file, encoding='UTF-8')
@@ -47,10 +47,10 @@ werkzeug_logger.addHandler(stream_handler)
 werkzeug_logger.setLevel(logging.DEBUG)
 
 # global variable
-UPLOAD_FOLDER = os.path.join(here, 'uploads')
+UPLOAD_FOLDER = Path(here) / 'uploads'
 ALLOWED_EXTENSIONS = ['xmind', 'har', 'json']
 DEBUG = True
-DATABASE = os.path.join(here, 'data.db3')
+DATABASE = str(here / 'data.db3')
 HOST = '0.0.0.0'
 
 # flask app
@@ -73,11 +73,11 @@ def init_db():
 def init():
     app.logger.info('Start initializing the database...')
     if not exists(UPLOAD_FOLDER):
-        os.mkdir(UPLOAD_FOLDER)
+        UPLOAD_FOLDER.mkdir()
 
     if not exists(DATABASE):
         init_db()
-    app.logger.info('Congratulations! the xmind2testcase webtool database has initialized successfully!')
+    app.logger.info('Congratulations! the xmind2case webtool database has initialized successfully!')
 
 
 @app.before_request
@@ -341,6 +341,35 @@ def transale_xmind():
                                        mimetype="application/octet-stream")
 
         response.headers["X-Download-Filename"] = quote(out_put_file.encode('utf-8'))
+        # response.headers["Content-Type"] = 'multipart/form-data'
+        return response
+
+    else:
+        g.error = "不支持该文件类型: {}".format(','.join(g.invalid_files))
+
+
+@app.route('/csv_2_xlsx', methods=['POST'])
+def csv_2_xlsx():
+    file = request.files['file']
+    filename = request.files['file'].filename
+
+    if file and filename.endswith('.csv'):
+        input_file = UPLOAD_FOLDER / filename
+        file_base_name = input_file.stem
+
+        out_put_filename = f'{file_base_name}.xlsx'
+        out_put_file_path = UPLOAD_FOLDER / out_put_filename
+
+        # 保存输入文件
+        file.save(str(input_file))
+        # 开始处理
+        csv_2_excel(input_file, out_put_file_path)
+
+        # 创建响应
+        response = send_from_directory(app.config['UPLOAD_FOLDER'], out_put_filename, as_attachment=True,
+                                       mimetype="application/octet-stream")
+
+        response.headers["X-Download-Filename"] = quote(out_put_filename.encode('utf-8'))
         # response.headers["Content-Type"] = 'multipart/form-data'
         return response
 

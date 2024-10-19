@@ -36,8 +36,10 @@ function setupDropZone(dropzone) {
         $(document).ajaxStop(function() {
             //  隐藏loading div
             $form.find('div.loading').remove()
+
             //  显示$dropZone
             $dropZone.show();
+
         });
 
         $.ajax({
